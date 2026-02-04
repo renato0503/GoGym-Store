@@ -9,93 +9,53 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&family=Inter:wght@300;400;600;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <!-- Ícones FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mapa (Leaflet CSS - Opcional para visual, mas usaremos CSS puro para leveza) -->
 
     <style>
-        /* --- RESET E VARIÁVEIS GLOBAIS --- */
+        /* --- VARIAVEIS GLOBAIS --- */
         :root {
             --bg-deep: #050505;
-            --bg-card: #0f0f0f;
-            --bg-glass: rgba(20, 20, 20, 0.85);
-            
+            --bg-card: #111111;
             --neon-yellow: #ccff00;
-            --neon-glow: rgba(204, 255, 0, 0.25);
+            --neon-glow: rgba(204, 255, 0, 0.3);
             --orange-alert: #ff5e00;
             --blue-tech: #00f2ff;
-            
             --text-main: #ffffff;
             --text-muted: #888888;
-            
             --border-dim: #222222;
-            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            outline: none;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
 
         body {
             background-color: var(--bg-deep);
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
-            overflow: hidden; /* App-like feel */
+            overflow: hidden;
             height: 100vh;
             width: 100vw;
         }
 
-        /* --- TIPOGRAFIA --- */
-        h1, h2, h3, .brand-font {
-            font-family: 'Montserrat', sans-serif;
-            text-transform: uppercase;
-            font-weight: 900;
-            letter-spacing: -0.5px;
-        }
+        h1, h2, h3, .brand-font { font-family: 'Montserrat', sans-serif; text-transform: uppercase; font-weight: 900; }
+        .tech-font { font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
 
-        .tech-font {
-            font-family: 'Rajdhani', sans-serif;
-            text-transform: uppercase;
-        }
-
-        /* --- UI COMPONENTS --- */
+        /* --- UI ELEMENTS --- */
         .btn-neon {
             background: var(--neon-yellow);
             color: black;
             border: none;
-            padding: 16px 24px;
+            padding: 16px;
             border-radius: 12px;
             font-weight: 800;
             font-family: 'Montserrat', sans-serif;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            width: 100%;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
             box-shadow: 0 0 15px var(--neon-glow);
             cursor: pointer;
-            transition: var(--transition);
-            width: 100%;
+            transition: 0.2s;
         }
-
-        .btn-neon:active {
-            transform: scale(0.96);
-            box-shadow: 0 0 5px var(--neon-glow);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            backdrop-filter: blur(5px);
-            cursor: pointer;
-        }
+        .btn-neon:active { transform: scale(0.98); }
 
         .scarcity-badge {
             background: var(--orange-alert);
@@ -105,323 +65,169 @@
             border-radius: 4px;
             font-weight: 800;
             text-transform: uppercase;
-            display: inline-block;
             margin-bottom: 8px;
-            box-shadow: 0 2px 10px rgba(255, 94, 0, 0.3);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+            display: inline-block;
+            box-shadow: 0 0 10px rgba(255, 94, 0, 0.4);
         }
 
         /* --- HEADER --- */
         header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 20px;
-            z-index: 100;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(180deg, rgba(5,5,5,0.9) 0%, rgba(5,5,5,0) 100%);
+            position: absolute; top: 0; left: 0; width: 100%; padding: 20px; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(180deg, rgba(5,5,5,0.95) 0%, transparent 100%);
         }
-
-        .logo-container h1 {
-            font-size: 1.4rem;
-            color: var(--neon-yellow);
-            line-height: 1;
-        }
-        .logo-container span {
-            display: block;
-            font-size: 0.55rem;
-            color: white;
-            letter-spacing: 2px;
-            font-weight: 500;
-            margin-top: 4px;
-        }
+        .logo-container h1 { font-size: 1.4rem; color: var(--neon-yellow); line-height: 1; }
+        .logo-container span { display: block; font-size: 0.55rem; color: white; letter-spacing: 2px; }
 
         .cart-trigger {
-            position: relative;
-            font-size: 1.2rem;
-            color: white;
-            background: rgba(255,255,255,0.1);
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid rgba(255,255,255,0.1);
-            cursor: pointer;
+            position: relative; font-size: 1.2rem; color: white;
+            background: rgba(255,255,255,0.1); width: 45px; height: 45px;
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            border: 1px solid rgba(255,255,255,0.1); cursor: pointer;
         }
-
         .cart-count {
+            position: absolute; top: -5px; right: -5px; background: var(--orange-alert);
+            font-size: 0.7rem; width: 18px; height: 18px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; font-weight: 800;
+        }
+
+        /* --- VIEWS (TABS) --- */
+        .view-section {
+            height: 100vh;
+            width: 100vw;
             position: absolute;
-            top: -5px;
-            right: -5px;
-            background: var(--orange-alert);
-            font-size: 0.7rem;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 800;
-        }
-
-        /* --- HOME SCREEN (DASHBOARD) --- */
-        #home-dashboard {
-            height: 100%;
-            overflow-y: auto;
-            padding: 90px 20px 120px 20px;
-            transition: var(--transition);
-        }
-
-        .welcome-card {
-            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-            border: 1px solid var(--border-dim);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .welcome-card::after {
-            content: '';
-            position: absolute;
-            top: 0; right: 0;
-            width: 100px; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(204,255,0,0.05));
-        }
-
-        .welcome-card h2 { font-size: 1.2rem; margin-bottom: 5px; }
-        .welcome-card p { font-size: 0.8rem; color: var(--text-muted); max-width: 80%; }
-        
-        .eta-display {
-            margin-top: 15px;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 0.9rem;
-            color: var(--neon-yellow);
-            font-weight: 700;
-        }
-
-        /* GRID DE CATEGORIAS */
-        .categories-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .cat-card {
-            background: var(--bg-card);
-            border-radius: 18px;
-            padding: 25px 15px;
-            text-align: center;
-            border: 1px solid var(--border-dim);
-            transition: var(--transition);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cat-card:active { transform: scale(0.98); background: #151515; }
-
-        .cat-card i {
-            font-size: 2rem;
-            color: var(--neon-yellow);
-            margin-bottom: 15px;
-            display: block;
-            text-shadow: 0 0 15px rgba(204,255,0,0.2);
-        }
-
-        .cat-card h3 { font-size: 0.75rem; letter-spacing: 1px; color: white; }
-        .cat-card p { font-size: 0.6rem; color: var(--text-muted); margin-top: 5px; }
-
-        /* --- FEED DE PRODUTOS (FULLSCREEN OVERLAY) --- */
-        #product-feed-layer {
-            position: fixed;
             top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: var(--bg-deep);
-            z-index: 500;
-            transform: translateY(100%);
-            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
-            display: flex;
-            flex-direction: column;
+            overflow-y: auto;
+            padding-bottom: 80px; /* Space for navbar */
+            display: none; /* Hidden by default */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .view-section.active { display: block; opacity: 1; }
+
+        /* --- HOME DASHBOARD --- */
+        #view-home { padding: 90px 20px 100px 20px; }
+
+        .categories-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .cat-card {
+            background: var(--bg-card); border-radius: 18px; padding: 25px 15px;
+            text-align: center; border: 1px solid var(--border-dim); cursor: pointer;
+            transition: 0.2s;
+        }
+        .cat-card:active { transform: scale(0.95); border-color: var(--neon-yellow); }
+        .cat-card i { font-size: 2rem; color: var(--neon-yellow); margin-bottom: 15px; display: block; }
+        .cat-card h3 { font-size: 0.7rem; letter-spacing: 1px; color: white; }
+
+        /* --- TRACKING VIEW (MAPA) --- */
+        #view-tracking { background: #080808; }
+        
+        .map-container {
+            height: 60vh;
+            width: 100%;
+            background-color: #111;
+            background-image: 
+                linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 2px solid var(--neon-yellow);
         }
 
+        /* Radar Effect */
+        .radar-sweep {
+            position: absolute; top: 50%; left: 50%;
+            width: 100vw; height: 100vw;
+            background: conic-gradient(from 0deg, transparent 0deg, rgba(204, 255, 0, 0.1) 60deg, transparent 61deg);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: radarSpin 4s linear infinite;
+        }
+        @keyframes radarSpin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        .map-marker {
+            position: absolute; width: 15px; height: 15px;
+            background: var(--neon-yellow); border-radius: 50%;
+            box-shadow: 0 0 20px var(--neon-yellow);
+        }
+        .marker-pulse {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 50px; height: 50px; border: 1px solid var(--neon-yellow);
+            border-radius: 50%; animation: pulseRing 2s infinite; opacity: 0;
+        }
+        @keyframes pulseRing { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(2); opacity: 0; } }
+
+        .zone-info { padding: 20px; }
+        .zone-card {
+            background: #1a1a1a; padding: 15px; border-radius: 12px;
+            border-left: 3px solid var(--neon-yellow); margin-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        /* --- PRODUCT FEED (FULLSCREEN) --- */
+        #product-feed-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-deep); z-index: 500;
+            transform: translateY(100%); transition: transform 0.4s ease;
+            display: flex; flex-direction: column;
+        }
         #product-feed-layer.active { transform: translateY(0); }
 
         .feed-header {
-            position: absolute;
-            top: 0; left: 0; width: 100%;
-            padding: 20px;
-            z-index: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+            position: absolute; top: 0; left: 0; width: 100%; padding: 20px; z-index: 600;
+            display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, transparent 100%);
         }
 
-        .btn-close-feed {
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            width: 40px; height: 40px;
-            display: flex; justify-content: center; align-items: center;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            backdrop-filter: blur(4px);
-        }
-
-        /* SCROLL SNAP CONTAINER */
-        .snap-container {
-            flex: 1;
-            overflow-y: scroll;
-            scroll-snap-type: y mandatory;
-            scroll-behavior: smooth;
-        }
-
+        .snap-container { flex: 1; overflow-y: scroll; scroll-snap-type: y mandatory; }
         .product-slide {
-            height: 100vh;
-            width: 100%;
-            scroll-snap-align: start;
-            position: relative;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            height: 100vh; width: 100%; scroll-snap-align: start;
+            position: relative; background-size: cover; background-position: center;
         }
-
-        /* GRADIENTE DE LEITURA */
         .product-slide::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(0deg, #050505 10%, rgba(5,5,5,0.9) 35%, rgba(5,5,5,0.2) 60%, rgba(5,5,5,0.4) 100%);
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(0deg, #050505 15%, rgba(5,5,5,0.8) 40%, rgba(5,5,5,0.1) 70%);
         }
 
-        .product-content {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 20px 20px 40px 20px;
-            z-index: 10;
-        }
+        .product-content { position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px 20px 100px 20px; z-index: 10; }
+        .p-title { font-size: 2rem; line-height: 0.95; margin-bottom: 10px; color: white; text-shadow: 0 4px 10px black; }
+        .p-price { font-family: 'Rajdhani', sans-serif; font-size: 1.8rem; color: var(--neon-yellow); font-weight: 700; display: block; margin-bottom: 10px; }
+        .p-desc { font-size: 0.9rem; color: #ccc; margin-bottom: 20px; max-width: 95%; line-height: 1.4; }
 
-        .p-title {
-            font-size: 2rem;
-            line-height: 0.95;
-            margin-bottom: 10px;
-            color: white;
-            text-shadow: 0 5px 15px rgba(0,0,0,0.8);
+        /* --- NAVBAR INFERIOR --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #0a0a0a; border-top: 1px solid #222;
+            padding: 12px; display: flex; justify-content: space-around; z-index: 900;
         }
+        .nav-item { text-align: center; opacity: 0.5; color: white; cursor: pointer; transition: 0.3s; }
+        .nav-item.active { opacity: 1; color: var(--neon-yellow); transform: translateY(-5px); }
+        .nav-item i { font-size: 1.4rem; display: block; margin-bottom: 4px; }
+        .nav-item span { font-size: 0.6rem; text-transform: uppercase; font-weight: 700; }
 
-        .p-price {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1.8rem;
-            color: var(--neon-yellow);
-            font-weight: 700;
-            margin-bottom: 15px;
-            display: block;
-        }
-
-        .p-desc {
-            font-size: 0.9rem;
-            color: #d0d0d0;
-            margin-bottom: 25px;
-            line-height: 1.5;
-            max-width: 95%;
-        }
-
-        .actions-row {
-            display: grid;
-            grid-template-columns: 1fr 3fr;
-            gap: 10px;
-        }
-
-        /* --- MODAL DE DETALHES --- */
+        /* --- MODAL (CARRINHO) --- */
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            display: none;
-            justify-content: center;
-            align-items: flex-end; /* Sheet style */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(5px);
+            z-index: 2000; display: none; justify-content: center; align-items: flex-end;
         }
-
         .modal-sheet {
-            background: #151515;
-            width: 100%;
-            max-height: 85vh;
-            border-radius: 25px 25px 0 0;
-            padding: 30px 25px;
-            border-top: 1px solid var(--neon-yellow);
-            overflow-y: auto;
-            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            background: #1a1a1a; width: 100%; max-height: 80vh;
+            border-radius: 20px 20px 0 0; padding: 25px;
+            border-top: 1px solid var(--neon-yellow); overflow-y: auto;
+            animation: slideUp 0.3s ease;
         }
-
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-
-        .spec-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px 0;
-            border-bottom: 1px solid #222;
-        }
-        .spec-label { color: var(--text-muted); font-size: 0.85rem; }
-        .spec-value { color: white; font-weight: 600; font-size: 0.9rem; text-align: right; }
-
-        /* --- CARRINHO (CART) --- */
-        #cart-modal {
-            z-index: 1100;
-        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
         .cart-item {
-            background: #222;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background: #111; padding: 15px; border-radius: 10px; margin-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center; border: 1px solid #333;
         }
-        .cart-item h4 { font-size: 0.9rem; margin-bottom: 4px; }
-        .cart-item p { color: var(--neon-yellow); font-size: 0.8rem; }
-        .remove-btn { color: #ff4444; font-size: 1.2rem; cursor: pointer; padding: 5px; }
-
-        /* --- RODAPÉ FIXO --- */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0; left: 0; width: 100%;
-            background: #0a0a0a;
-            border-top: 1px solid #222;
-            padding: 15px;
-            display: flex;
-            justify-content: space-around;
-            z-index: 90;
-        }
-        .nav-item { text-align: center; opacity: 0.6; font-size: 0.7rem; color: white; }
-        .nav-item.active { opacity: 1; color: var(--neon-yellow); }
-        .nav-item i { font-size: 1.2rem; margin-bottom: 4px; display: block; }
-
     </style>
 </head>
 <body>
 
-    <!-- Header Principal -->
+    <!-- Header (Visível na Home) -->
     <header id="main-header">
         <div class="logo-container">
             <h1>GOGYM</h1>
@@ -433,311 +239,252 @@
         </div>
     </header>
 
-    <!-- TELA INICIAL (DASHBOARD) -->
-    <main id="home-dashboard">
-        
-        <div class="welcome-card">
-            <span class="scarcity-badge">STATUS DA LOJA: ONLINE</span>
-            <h2>SETUP DE ELITE EM 45 MIN</h2>
-            <p>Logística expressa para Cuiabá e Várzea Grande. O calor não espera, seu treino também não.</p>
-            <div class="eta-display">
-                <i class="fa-solid fa-clock"></i> PEÇA AGORA, RECEBA ATÉ <span id="eta-time">--:--</span>
-            </div>
+    <!-- VIEW 1: HOME (VITRINE) -->
+    <section id="view-home" class="view-section active">
+        <div style="text-align: center; margin-bottom: 30px; border: 1px solid #222; padding: 20px; border-radius: 15px; background: linear-gradient(45deg, #111, #080808);">
+            <span class="scarcity-badge">STATUS: ONLINE</span>
+            <h2 style="font-size: 1.1rem; margin-bottom: 5px;">CUIABÁ & VÁRZEA GRANDE</h2>
+            <p style="font-size: 0.8rem; color: #888;">Logística rápida. O calor não espera.</p>
         </div>
 
-        <h3 style="margin-bottom: 15px; font-size: 0.9rem; color: #666; padding-left: 5px;">DEPARTAMENTOS</h3>
+        <h3 style="margin-bottom: 15px; font-size: 0.85rem; color: #666;">DEPARTAMENTOS</h3>
         
         <div class="categories-grid">
             <div class="cat-card" onclick="openCategory('hidra')">
                 <i class="fa-solid fa-bottle-water"></i>
-                <h3>HIDRATAÇÃO TECH</h3>
-                <p>MagSafe, Térmicas & Vidro</p>
+                <h3>HIDRATAÇÃO</h3>
             </div>
             
             <div class="cat-card" onclick="openCategory('forca')">
                 <i class="fa-solid fa-dumbbell"></i>
-                <h3>FORÇA BRUTA</h3>
-                <p>Belts, Straps & Sleeves</p>
+                <h3>FORÇA & POWER</h3>
             </div>
             
             <div class="cat-card" onclick="openCategory('acessorios')">
-                <i class="fa-solid fa-masks-theater"></i> <!-- Usando ícone genérico para gear -->
-                <i class="fa-solid fa-backpack" style="margin-top:-25px; display:block;"></i>
+                <i class="fa-solid fa-backpack"></i> <!-- Ícone Mochila -->
                 <h3>EQUIPAMENTOS</h3>
-                <p>Mochilas, Grips & Caddy</p>
             </div>
             
             <div class="cat-card" onclick="openCategory('recovery')">
                 <i class="fa-solid fa-snowflake"></i>
                 <h3>RECOVERY</h3>
-                <p>Gelo, Massagem & Proteção</p>
             </div>
+        </div>
+    </section>
 
-            <div class="cat-card" style="grid-column: span 2; background: linear-gradient(90deg, #1a1a1a, #0d0d0d);" onclick="toggleSupport()">
-                <i class="fa-brands fa-whatsapp" style="display:inline; font-size: 1.2rem; margin-right: 10px;"></i>
-                <span style="font-size: 0.8rem; font-weight: 700;">FALAR COM ESPECIALISTA</span>
+    <!-- VIEW 2: TRACKING (MAPA) -->
+    <section id="view-tracking" class="view-section">
+        <div class="map-container">
+            <div class="radar-sweep"></div>
+            
+            <!-- Marcador Loja (Centro) -->
+            <div class="map-marker" style="top: 50%; left: 50%;">
+                <div class="marker-pulse"></div>
+            </div>
+            
+            <!-- Marcadores Zonas -->
+            <div class="map-marker" style="top: 40%; left: 60%; background: #00f2ff; width: 8px; height: 8px;"></div>
+            <div class="map-marker" style="top: 60%; left: 30%; background: #00f2ff; width: 8px; height: 8px;"></div>
+            
+            <div style="position: absolute; bottom: 20px; left: 20px; background: rgba(0,0,0,0.8); padding: 10px; border-radius: 8px; border-left: 2px solid var(--neon-yellow);">
+                <span class="tech-font" style="font-size: 0.7rem; color: #aaa;">HUB CENTRAL</span><br>
+                <strong style="color: white;">CUIABÁ, MT</strong>
             </div>
         </div>
 
-        <div style="height: 50px;"></div> <!-- Espaçador -->
-    </main>
+        <div class="zone-info">
+            <h2 style="margin-bottom: 20px; font-size: 1.2rem;">RAIO DE ENTREGA</h2>
+            
+            <div class="zone-card">
+                <div>
+                    <strong style="color: var(--neon-yellow);">ZONA VERDE</strong>
+                    <p style="font-size: 0.8rem; color: #888;">Santa Rosa, Jd. Américas, Duque</p>
+                </div>
+                <div class="tech-font" style="color: white; font-weight: 700;">~30 MIN</div>
+            </div>
 
-    <!-- LAYER DO FEED DE PRODUTOS (OVERLAY) -->
+            <div class="zone-card" style="border-color: var(--blue-tech);">
+                <div>
+                    <strong style="color: var(--blue-tech);">ZONA AZUL</strong>
+                    <p style="font-size: 0.8rem; color: #888;">Demais bairros Cuiabá</p>
+                </div>
+                <div class="tech-font" style="color: white; font-weight: 700;">~60 MIN</div>
+            </div>
+
+            <div class="zone-card" style="border-color: var(--orange-alert);">
+                <div>
+                    <strong style="color: var(--orange-alert);">ZONA VG</strong>
+                    <p style="font-size: 0.8rem; color: #888;">Várzea Grande Completa</p>
+                </div>
+                <div class="tech-font" style="color: white; font-weight: 700;">~90 MIN</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEED DE PRODUTOS (OVERLAY) -->
     <div id="product-feed-layer">
         <div class="feed-header">
-            <h3 id="feed-title" style="color:white; font-size:1rem;">CATEGORIA</h3>
-            <div class="btn-close-feed" onclick="closeFeed()">
-                <i class="fa-solid fa-chevron-down"></i>
+            <div onclick="closeFeed()" style="width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; display:flex; justify-content:center; align-items:center; cursor:pointer;">
+                <i class="fa-solid fa-chevron-down" style="color: white;"></i>
             </div>
+            <h3 id="feed-title" style="color:white; font-size:0.9rem;">CATALOGO</h3>
+            <div style="width:40px;"></div>
         </div>
-        
         <div class="snap-container" id="feed-content">
-            <!-- Produtos injetados via JS -->
+            <!-- JS INJETA AQUI -->
         </div>
     </div>
 
-    <!-- MODAL DE DETALHES TÉCNICOS -->
-    <div class="modal-overlay" id="tech-modal" onclick="closeModal(event, 'tech-modal')">
-        <div class="modal-sheet" onclick="event.stopPropagation()">
-            <h2 id="modal-title" style="color:var(--neon-yellow); margin-bottom:20px;">NOME DO PRODUTO</h2>
-            <p id="modal-desc" style="color:#ccc; margin-bottom:20px; font-size:0.9rem; line-height:1.6;"></p>
-            
-            <h4 class="tech-font" style="color:white; border-bottom:1px solid #333; padding-bottom:10px; margin-bottom:15px;">ESPECIFICAÇÕES</h4>
-            <div id="modal-specs">
-                <!-- Specs injetadas -->
-            </div>
-
-            <button class="btn-neon" onclick="closeModal(null, 'tech-modal')" style="margin-top:30px; background:#333; color:white; box-shadow:none;">
-                FECHAR FICHA
-            </button>
-        </div>
-    </div>
-
-    <!-- MODAL DO CARRINHO -->
+    <!-- MODAL CARRINHO -->
     <div class="modal-overlay" id="cart-modal" onclick="closeModal(event, 'cart-modal')">
         <div class="modal-sheet" onclick="event.stopPropagation()">
-            <h2 style="color:var(--neon-yellow); margin-bottom:10px;">SUA MOCHILA</h2>
-            <p style="font-size:0.8rem; color:#888; margin-bottom:20px;">Itens reservados por 15 minutos.</p>
+            <h2 style="color:var(--neon-yellow); margin-bottom:15px;">SEU ARSENAL</h2>
+            <div id="cart-items-container" style="margin-bottom: 20px;"></div>
             
-            <div id="cart-items-container" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px;">
-                <!-- Itens do carrinho -->
-                <p style="text-align:center; color:#555; padding: 20px;">Sua mochila está vazia.</p>
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px; border-top:1px solid #333; padding-top:15px;">
+                <span style="color:white;">TOTAL ESTIMADO</span>
+                <strong style="color:var(--neon-yellow); font-size:1.2rem;" id="cart-total">R$ 0,00</strong>
             </div>
 
-            <div class="spec-row" style="border-top: 1px solid #333; border-bottom:none; margin-top:10px;">
-                <span class="spec-label" style="font-size:1rem; color:white;">TOTAL ESTIMADO</span>
-                <span class="spec-value" style="font-size:1.2rem; color:var(--neon-yellow);" id="cart-total">R$ 0,00</span>
-            </div>
-
-            <button class="btn-neon" onclick="finalizeCheckout()">
-                <i class="fa-brands fa-whatsapp"></i> FINALIZAR COMPRA
+            <button class="btn-neon" onclick="checkout()">
+                <i class="fa-brands fa-whatsapp"></i> FINALIZAR PEDIDO
             </button>
         </div>
     </div>
 
-    <!-- NAVBAR INFERIOR (VISUAL) -->
+    <!-- NAVBAR NAVEGAÇÃO -->
     <div class="bottom-nav">
-        <div class="nav-item active">
+        <div class="nav-item active" onclick="switchView('home')">
             <i class="fa-solid fa-store"></i>
-            LOJA
+            <span>LOJA</span>
         </div>
-        <div class="nav-item">
+        <div class="nav-item" onclick="switchView('tracking')">
             <i class="fa-solid fa-map-location-dot"></i>
-            TRACKING
+            <span>MAPA</span>
         </div>
         <div class="nav-item" onclick="toggleCart()">
             <i class="fa-solid fa-bag-shopping"></i>
-            BAG
+            <span>BAG</span>
         </div>
     </div>
 
     <script>
-        /* --- BANCO DE DADOS COMPLETO --- */
-        /* Imagens reais puxadas do Unsplash Source com keywords específicas para garantir qualidade */
+        /* --- BANCO DE DADOS (LINKS DE IMAGENS CORRIGIDOS E ESTÁVEIS) --- */
         const DB = {
             hidra: [
-                {
-                    id: 'h1',
-                    name: "GARRAFA MAGSAFE PRO",
-                    price: 159.90,
-                    desc: "A revolução dos treinos. Tampa com anel magnético N52 forte o suficiente para segurar qualquer iPhone (ou Android com anel). Filme seus sets sem precisar de tripé.",
-                    imgKw: "black gym water bottle metal",
-                    specs: { "Material": "Aço Inox 304", "Capacidade": "950ml", "Térmica": "24h Gelado / 12h Quente", "Compatibilidade": "MagSafe / Anel Universal" }
-                },
-                {
-                    id: 'h2',
-                    name: "SHAKER VORTEX ELETRIC",
-                    price: 139.00,
-                    desc: "Motor de 11.000 RPM integrado. Esqueça pelotas de whey. Cria um vortex que mistura suplementos e frutas macias em segundos. Bateria recarregável.",
-                    imgKw: "protein shaker bottle electric",
-                    specs: { "Motor": "11k RPM", "Bateria": "USB-C (30 usos)", "Material": "Tritan (BPA Free)", "Capacidade": "600ml" }
-                },
-                {
-                    id: 'h3',
-                    name: "GALÃO TÉRMICO 2.5L",
-                    price: 289.90,
-                    desc: "O gigante de aço. Parede dupla com isolamento a vácuo. Água gelada o dia inteiro, mesmo se deixar no carro sob o sol de Cuiabá.",
-                    imgKw: "large black water jug gym",
-                    specs: { "Isolamento": "Vácuo Parede Dupla", "Alça": "Paracord Tático", "Tampa": "Flip Anti-vazamento", "Peso Vazio": "800g" }
-                },
-                {
-                    id: 'h4',
-                    name: "COPO TÉRMICO DAILY",
-                    price: 89.90,
-                    desc: "Estilo Stanley, mas com a pegada GoGym. Preto fosco, logo a laser. Para café pré-treino ou água no escritório.",
-                    imgKw: "black thermal cup",
-                    specs: { "Capacidade": "473ml", "Material": "Aço Inox 18/8", "Tampa": "Com abridor", "Cor": "Matte Black" }
-                }
+                { id: 'h1', name: "GARRAFA MAGSAFE", price: 159.90, desc: "Aço Inox. Tampa magnética para filmar treinos. O tripé que você bebe.", img: "https://images.unsplash.com/photo-1602143407151-11115cdbf6e0?q=80&w=1080" },
+                { id: 'h2', name: "SHAKER VORTEX", price: 139.00, desc: "Motor elétrico 11k RPM. Whey cremoso, zero pelotas. Recarregável.", img: "https://images.unsplash.com/photo-1593091417202-d4d2a8b211f6?q=80&w=1080" },
+                { id: 'h3', name: "GALÃO 2.2L DARK", price: 89.90, desc: "Galão fosco de alta capacidade. Hidratação para o dia todo.", img: "https://images.unsplash.com/photo-1546483875-ad9014c88eba?q=80&w=1080" },
+                { id: 'h4', name: "COPO TÉRMICO", price: 79.90, desc: "Parede dupla a vácuo. Café quente ou água gelada no escritório.", img: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=1080" }
             ],
             forca: [
-                {
-                    id: 'f1',
-                    name: "LEVER BELT 13MM",
-                    price: 489.00,
-                    desc: "O cinto definitivo. 13mm de espessura para suporte máximo na lombar. Fivela de alavanca (Lever) em aço inoxidável cromado. Destrave em 1 segundo entre séries.",
-                    imgKw: "powerlifting belt black leather",
-                    specs: { "Espessura": "13mm", "Material": "Couro Suede/Legítimo", "Fivela": "Aço Cromado", "Garantia": "Vitalícia na alavanca" }
-                },
-                {
-                    id: 'f2',
-                    name: "STRAPS FIGURE 8",
-                    price: 89.00,
-                    desc: "Trava sua mão na barra. Diferente dos straps comuns, o Figure 8 elimina totalmente a necessidade de força de pegada. Foco 100% nas costas/pernas.",
-                    imgKw: "weightlifting straps gym",
-                    specs: { "Tipo": "Figure 8 (Loop Duplo)", "Material": "Algodão Heavy Duty", "Costura": "Reforçada em X", "Carga Máx": "400kg" }
-                },
-                {
-                    id: 'f3',
-                    name: "JOELHEIRA NEOPRENE 7MM",
-                    price: 199.00,
-                    desc: "Compressão e calor para articulações. Neoprene SBR de 7mm. Ideal para agachamento pesado e prevenção de lesões.",
-                    imgKw: "knee sleeves gym black",
-                    specs: { "Espessura": "7mm", "Material": "Neoprene SBR", "Venda": "Par", "Design": "Ergonômico 3D" }
-                },
-                {
-                    id: 'f4',
-                    name: "WRIST WRAPS PRO",
-                    price: 79.90,
-                    desc: "Munhequeira elástica rígida. Estabilidade total para Supino e Desenvolvimento. Evite dores no pulso.",
-                    imgKw: "wrist wraps powerlifting",
-                    specs: { "Comprimento": "60cm", "Velcro": "Militar Largo", "Elástico": "Alta Tensão", "Loop": "Dedão Reforçado" }
-                }
+                { id: 'f1', name: "LEVER BELT 13MM", price: 489.00, desc: "Couro legítimo, fivela de alavanca. O padrão ouro do Powerlifting.", img: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1080" },
+                { id: 'f2', name: "JOELHEIRA 7MM", price: 199.00, desc: "Par de joelheiras de Neoprene. Compressão e calor para agachamento.", img: "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?q=80&w=1080" },
+                { id: 'f3', name: "STRAPS FIGURE 8", price: 85.00, desc: "Trava total do pulso na barra. Ideal para cargas máximas no Terra.", img: "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?q=80&w=1080" },
+                { id: 'f4', name: "MAGNÉSIO LÍQUIDO", price: 45.00, desc: "Secagem rápida, sem sujeira. Grip absoluto na barra.", img: "https://images.unsplash.com/photo-1584735935682-2fdd11898612?q=80&w=1080" },
+                { id: 'f5', name: "MUNHEQUEIRA RÍGIDA", price: 69.90, desc: "Suporte para supino pesado. Elástico de alta tensão.", img: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=1080" }
             ],
             acessorios: [
-                {
-                    id: 'a1',
-                    name: "MOCHILA TACTICAL 45L",
-                    price: 379.00,
-                    desc: "Espaço para tudo. Abertura 180 graus (clamshell). Compartimento para tênis, notebook e marmitas. Velcro frontal para patches.",
-                    imgKw: "tactical backpack black military",
-                    specs: { "Volume": "45 Litros", "Tecido": "Oxford 900D (Impermeável)", "Zíper": "Duplo Reforçado", "MOLLE": "Sistema frontal e lateral" }
-                },
-                {
-                    id: 'a2',
-                    name: "GYM CADDY MAGNETIC",
-                    price: 119.00,
-                    desc: "Organizador magnético. Gruda no rack do agachamento ou máquina. Segura celular, chaves, fone e garrafa. Pare de jogar suas coisas no chão sujo.",
-                    imgKw: "gym magnetic phone holder",
-                    specs: { "Ímãs": "Neodímio x2", "Material": "Silicone Antiderrapante", "Compatível": "Qualquer superfície metálica", "Tamanho": "Compacto" }
-                },
-                {
-                    id: 'a3',
-                    name: "GRIPS FIBRA DE CARBONO",
-                    price: 145.00,
-                    desc: "Para quem faz Cross ou barra fixa. Material sintético estilo fibra de carbono que 'gruda' na barra. Protege a mão de calos abertos.",
-                    imgKw: "gymnastics grips crossfit",
-                    specs: { "Material": "Sintético Carbon Fiber", "Furos": "Sem furos (Speed)", "Munhequeira": "Integrada", "Espessura": "2mm" }
-                },
-                {
-                    id: 'a4',
-                    name: "MAGNÉSIO LÍQUIDO",
-                    price: 45.00,
-                    desc: "Aderência sem sujeira. Seca em 10 segundos na mão. Não faz nuvem de pó na academia.",
-                    imgKw: "liquid chalk gym bottle",
-                    specs: { "Volume": "200ml", "Álcool": "70%", "Duração": "Aprox. 100 treinos", "Resíduo": "Mínimo" }
-                }
+                { id: 'a1', name: "MOCHILA TACTICAL", price: 379.00, desc: "45 Litros, abertura 180º. Patches inclusos. Cabe tênis e marmita.", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=1080" },
+                { id: 'a2', name: "POCHETE SHOULDER", price: 89.00, desc: "Estilo Streetwear. Leve celular e chaves com segurança no treino.", img: "https://images.unsplash.com/photo-1545665277-5937bf04a5bd?q=80&w=1080" },
+                { id: 'a3', name: "GYM CADDY MAG", price: 119.00, desc: "Suporte magnético. Gruda na máquina e segura seus itens.", img: "https://images.unsplash.com/photo-1620188467120-5042ed1eb5da?q=80&w=1080" },
+                { id: 'a4', name: "BONÉ TÁTICO", price: 69.90, desc: "Velcro frontal, tecido respirável. Aba curva estilo trucker.", img: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=1080" },
+                { id: 'a5', name: "GRIPS CARBONO", price: 145.00, desc: "Proteção para as mãos. Material sintético ultra resistente.", img: "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=1080" }
             ],
             recovery: [
-                {
-                    id: 'r1',
-                    name: "TOALHA ICE-TECH",
-                    price: 49.00,
-                    desc: "Obrigatório em Cuiabá. Tecido tecnológico que esfria 10ºC abaixo da temperatura ambiente quando molhado e agitado.",
-                    imgKw: "cooling towel sports blue",
-                    specs: { "Tamanho": "30x100cm", "Tecnologia": "Evaporação Ativa", "Proteção": "UV 50+", "Embalagem": "Pote com mosquetão" }
-                },
-                {
-                    id: 'r2',
-                    name: "PISTOLA MASSAGEADORA",
-                    price: 299.00,
-                    desc: "Soltura miofascial portátil. 4 cabeças e 6 velocidades. Alivia a dor muscular pós-treino imediatamente.",
-                    imgKw: "massage gun black muscle",
-                    specs: { "Bateria": "2h Duração", "Velocidades": "6 Níveis", "Ruído": "Silencioso (<45dB)", "Peso": "900g" }
-                },
-                {
-                    id: 'r3',
-                    name: "FOAM ROLLER GRID",
-                    price: 89.00,
-                    desc: "Rolo de liberação com textura grid que simula o toque dos dedos. Essencial para coluna e pernas.",
-                    imgKw: "foam roller black gym",
-                    specs: { "Núcleo": "PVC Rígido", "Revestimento": "EVA Alta Densidade", "Suporte": "Até 150kg", "Tamanho": "33cm" }
-                }
+                { id: 'r1', name: "TOALHA ICE-TECH", price: 49.00, desc: "Resfriamento instantâneo. Essencial para o calor de MT.", img: "https://images.unsplash.com/photo-1616801990453-61b6238b3941?q=80&w=1080" },
+                { id: 'r2', name: "FOAM ROLLER", price: 99.00, desc: "Liberação miofascial. Textura grid para massagem profunda.", img: "https://images.unsplash.com/photo-1600881333168-2ef49b341f30?q=80&w=1080" },
+                { id: 'r3', name: "PISTOLA MASSAGEM", price: 299.00, desc: "Alívio muscular percussivo. 6 velocidades.", img: "https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=1080" }
             ]
         };
+
+        /* --- NAVEGAÇÃO ENTRE ABAS --- */
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('view-' + viewId).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            const icons = { 'home': 0, 'tracking': 1, 'bag': 2 }; // Índices
+            if(icons[viewId] !== undefined) document.querySelectorAll('.nav-item')[icons[viewId]].classList.add('active');
+        }
+
+        /* --- LÓGICA DE FEED (VITRINE) --- */
+        function openCategory(cat) {
+            const feed = document.getElementById('product-feed-layer');
+            const container = document.getElementById('feed-content');
+            document.getElementById('feed-title').innerText = cat.toUpperCase();
+            
+            container.innerHTML = '';
+            
+            DB[cat].forEach(item => {
+                container.innerHTML += `
+                    <section class="product-slide" style="background-image: url('${item.img}')">
+                        <div class="product-content">
+                            <span class="scarcity-badge">PRONTA ENTREGA</span>
+                            <h2 class="p-title">${item.name}</h2>
+                            <span class="p-price">R$ ${item.price.toFixed(2)}</span>
+                            <p class="p-desc">${item.desc}</p>
+                            <button class="btn-neon" onclick="addToCart('${item.id}', '${cat}')">
+                                <i class="fa-solid fa-plus"></i> ADICIONAR
+                            </button>
+                        </div>
+                    </section>
+                `;
+            });
+            
+            feed.classList.add('active');
+        }
+
+        function closeFeed() {
+            document.getElementById('product-feed-layer').classList.remove('active');
+        }
 
         /* --- LÓGICA DO CARRINHO --- */
         let cart = [];
 
-        function addToCart(productId, cat) {
-            const product = DB[cat].find(p => p.id === productId);
-            if(product) {
-                cart.push(product);
-                updateCartUI();
-                
-                // Feedback visual simples
-                const btn = event.target.closest('button');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = "<i class='fa-solid fa-check'></i> NA MOCHILA";
-                btn.style.background = "#fff";
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.style.background = "var(--neon-yellow)";
-                }, 1500);
-            }
+        function addToCart(id, cat) {
+            const product = DB[cat].find(p => p.id === id);
+            cart.push(product);
+            updateCart();
+            
+            // Feedback simples no botão
+            const btn = event.target.closest('button');
+            const original = btn.innerHTML;
+            btn.innerHTML = "<i class='fa-solid fa-check'></i> NA BAG";
+            btn.style.background = "white";
+            setTimeout(() => {
+                btn.innerHTML = original;
+                btn.style.background = "var(--neon-yellow)";
+            }, 1000);
         }
 
         function removeFromCart(index) {
             cart.splice(index, 1);
-            updateCartUI();
+            updateCart();
         }
 
-        function updateCartUI() {
-            const counter = document.getElementById('cart-counter');
-            counter.innerText = cart.length;
-            
-            // Animação do contador
-            counter.style.transform = "scale(1.2)";
-            setTimeout(() => counter.style.transform = "scale(1)", 200);
+        function updateCart() {
+            const count = document.getElementById('cart-counter');
+            count.innerText = cart.length;
+            count.style.transform = 'scale(1.2)';
+            setTimeout(() => count.style.transform = 'scale(1)', 200);
 
-            // Renderizar lista no modal
             const container = document.getElementById('cart-items-container');
-            container.innerHTML = "";
+            container.innerHTML = '';
             let total = 0;
 
             if(cart.length === 0) {
-                container.innerHTML = "<p style='text-align:center; color:#555; padding: 20px;'>Sua mochila está vazia.</p>";
+                container.innerHTML = "<p style='color:#666; text-align:center;'>Sua bag está vazia.</p>";
             } else {
                 cart.forEach((item, index) => {
                     total += item.price;
                     container.innerHTML += `
                         <div class="cart-item">
                             <div>
-                                <h4>${item.name}</h4>
-                                <p>R$ ${item.price.toFixed(2)}</p>
+                                <strong style="color:white; font-size:0.9rem;">${item.name}</strong>
+                                <span style="display:block; color:var(--neon-yellow); font-size:0.8rem;">R$ ${item.price.toFixed(2)}</span>
                             </div>
-                            <div class="remove-btn" onclick="removeFromCart(${index})">
-                                <i class="fa-solid fa-trash"></i>
-                            </div>
+                            <i class="fa-solid fa-trash" style="color:#ff4444; cursor:pointer;" onclick="removeFromCart(${index})"></i>
                         </div>
                     `;
                 });
@@ -750,91 +497,16 @@
             modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        /* --- LÓGICA DA VITRINE (FEED) --- */
-        function openCategory(catKey) {
-            const feedLayer = document.getElementById('product-feed-layer');
-            const feedContent = document.getElementById('feed-content');
-            const feedTitle = document.getElementById('feed-title');
-            
-            // Define Título
-            const titles = { 'hidra': 'HIDRATAÇÃO TECH', 'forca': 'FORÇA & POWER', 'acessorios': 'EQUIPAMENTOS', 'recovery': 'RECOVERY' };
-            feedTitle.innerText = titles[catKey];
-
-            // Renderiza Produtos
-            feedContent.innerHTML = '';
-            
-            DB[catKey].forEach(item => {
-                // Monta URL da imagem (usando Unsplash Source com keywords)
-                // Usamos um parametro random para evitar cache igual para todos
-                const imgUrl = `https://source.unsplash.com/1080x1920/?${encodeURIComponent(item.imgKw)}&sig=${item.id}`;
-                
-                // Monta HTML do Card
-                const html = `
-                    <section class="product-slide" style="background-image: url('${imgUrl}')">
-                        <div class="product-content">
-                            <span class="scarcity-badge">ESTOQUE CUIABÁ: BAIXO</span>
-                            <h2 class="p-title">${item.name}</h2>
-                            <span class="p-price">R$ ${item.price.toFixed(2)}</span>
-                            <p class="p-desc">${item.desc}</p>
-                            
-                            <div class="actions-row">
-                                <button class="btn-outline" onclick="openTechSpecs('${catKey}', '${item.id}')">
-                                    <i class="fa-solid fa-circle-info"></i>
-                                </button>
-                                <button class="btn-neon" onclick="addToCart('${item.id}', '${catKey}')">
-                                    <i class="fa-solid fa-cart-plus"></i> ADICIONAR
-                                </button>
-                            </div>
-                        </div>
-                    </section>
-                `;
-                feedContent.innerHTML += html;
-            });
-
-            feedLayer.classList.add('active');
-        }
-
-        function closeFeed() {
-            document.getElementById('product-feed-layer').classList.remove('active');
-        }
-
-        /* --- LÓGICA DE DETALHES TÉCNICOS --- */
-        function openTechSpecs(cat, id) {
-            const product = DB[cat].find(p => p.id === id);
-            const modal = document.getElementById('tech-modal');
-            
-            document.getElementById('modal-title').innerText = product.name;
-            document.getElementById('modal-desc').innerText = product.desc;
-            
-            const specsContainer = document.getElementById('modal-specs');
-            specsContainer.innerHTML = '';
-            
-            for (const [key, value] of Object.entries(product.specs)) {
-                specsContainer.innerHTML += `
-                    <div class="spec-row">
-                        <span class="spec-label">${key}</span>
-                        <span class="spec-value">${value}</span>
-                    </div>
-                `;
-            }
-            
-            modal.style.display = 'flex';
-        }
-
         function closeModal(e, id) {
-            if(e && e.target.id !== id) return; // Se clicou fora
+            if(e && e.target.id !== id) return;
             document.getElementById(id).style.display = 'none';
         }
 
-        /* --- FINALIZAÇÃO WHATSAPP --- */
-        function finalizeCheckout() {
-            if(cart.length === 0) {
-                alert("Sua mochila está vazia!");
-                return;
-            }
-
+        function checkout() {
+            if(cart.length === 0) return alert("Adicione itens primeiro!");
+            
             const phone = "5567993515206";
-            let msg = "*NOVO PEDIDO - GOGYM APP*\n\n";
+            let msg = "*PEDIDO NOVA GOGYM APP*\n\n";
             let total = 0;
             
             cart.forEach(item => {
@@ -843,29 +515,10 @@
             });
             
             msg += `\n*TOTAL: R$ ${total.toFixed(2)}*`;
-            msg += `\n\n------------------------------`;
-            msg += `\n📍 *Entrega:* Cuiabá/VG`;
-            msg += `\n🕒 *ETA:* 45-60 min`;
-            msg += `\n\nAguardo confirmação do PIX!`;
-
-            const link = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
-            window.open(link, '_blank');
+            msg += `\n📍 Entrega: Cuiabá/VG`;
+            
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
         }
-
-        function toggleSupport() {
-             window.open('https://wa.me/5567993515206?text=Olá, preciso de ajuda com um equipamento.', '_blank');
-        }
-
-        /* --- AUXILIARES --- */
-        // Atualiza ETA (Hora atual + 45min)
-        function updateTime() {
-            const now = new Date();
-            now.setMinutes(now.getMinutes() + 45);
-            const timeStr = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
-            document.getElementById('eta-time').innerText = timeStr;
-        }
-        setInterval(updateTime, 60000);
-        updateTime();
 
     </script>
 </body>
