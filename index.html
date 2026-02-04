@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GoGym Store | Setup em 45min</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-pure: #050505;
+            --bg-card: #121212;
+            --neon: #ccff00;
+            --neon-glow: rgba(204, 255, 0, 0.4);
+            --orange: #ff6b00;
+            --text-gray: #a0a0a0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--bg-pure);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .btn-buy, .category-name {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            font-weight: 900;
+        }
+
+        /* --- HEADER --- */
+        header {
+            padding: 30px 20px;
+            text-align: center;
+            background: var(--bg-pure);
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .logo { font-size: 1.8rem; color: var(--neon); letter-spacing: -1px; line-height: 1; }
+        .logo span { display: block; font-size: 0.65rem; color: white; letter-spacing: 2px; margin-top: 5px; font-weight: 400; }
+
+        /* --- CATEGORIAS (MENU INICIAL) --- */
+        #home-screen { padding: 20px; }
+        .welcome-msg { margin-bottom: 25px; text-align: center; color: var(--text-gray); font-size: 0.85rem; }
+
+        .cat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .cat-btn {
+            background: var(--bg-card);
+            border: 1px solid #222;
+            padding: 30px 15px;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .cat-btn i { font-size: 2rem; color: var(--neon); margin-bottom: 15px; display: block; }
+        .cat-btn span { font-size: 0.75rem; color: white; letter-spacing: 1px; }
+
+        .cat-btn:active { border-color: var(--neon); transform: scale(0.95); }
+
+        /* --- LISTA DE PRODUTOS (SCROLL SNAP) --- */
+        #product-feed {
+            display: none;
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            position: fixed;
+            top: 0; left: 0; width: 100%; z-index: 2000;
+            background: var(--bg-pure);
+        }
+
+        .product-section {
+            height: 100vh;
+            scroll-snap-align: start;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 40px 20px 110px 20px;
+            background-size: cover;
+            background-position: center;
+            background-color: #111;
+        }
+
+        .product-section::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(0deg, var(--bg-pure) 20%, transparent 80%);
+            z-index: 1;
+        }
+
+        .close-feed {
+            position: absolute;
+            top: 30px; left: 20px;
+            z-index: 3000;
+            background: rgba(0,0,0,0.6);
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            border: 1px solid var(--neon);
+            color: var(--neon);
+        }
+
+        /* --- CONTEÚDO DO PRODUTO --- */
+        .content { position: relative; z-index: 2; }
+        .tag { background: var(--orange); font-size: 0.6rem; padding: 4px 8px; border-radius: 4px; font-weight: 800; margin-bottom: 10px; display: inline-block; }
+        .title { font-size: 2.5rem; line-height: 0.85; margin-bottom: 15px; color: white; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .price { color: var(--neon); font-size: 1.5rem; margin-bottom: 15px; display: block; }
+        .desc { font-size: 0.9rem; color: #ccc; margin-bottom: 25px; line-height: 1.4; }
+
+        .btn-buy {
+            background: var(--neon);
+            color: black;
+            padding: 20px;
+            border-radius: 15px;
+            text-decoration: none;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+            box-shadow: 0 0 20px var(--neon-glow);
+            font-size: 1rem;
+        }
+
+        /* --- FOOTER ENTREGA --- */
+        .delivery-bar {
+            position: fixed;
+            bottom: 0; width: 100%;
+            background: rgba(5,5,5,0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            display: flex; justify-content: space-around;
+            border-top: 1px solid var(--neon);
+            z-index: 1000;
+        }
+
+        .del-box { text-align: center; }
+        .del-box small { font-size: 0.6rem; color: var(--text-gray); display: block; text-transform: uppercase; }
+        .del-box strong { font-size: 0.85rem; color: var(--neon); }
+
+    </style>
+</head>
+<body>
+
+    <header id="main-header">
+        <div class="logo">
+            GOGYM
+            <span>O SETUP DO SEU TREINO EM 45 MINUTOS</span>
+        </div>
+    </header>
+
+    <!-- TELA INICIAL: CATEGORIAS -->
+    <main id="home-screen">
+        <p class="welcome-msg">O que vamos evoluir no seu setup hoje?</p>
+        
+        <div class="cat-grid">
+            <div class="cat-btn" onclick="showProducts('hidra')">
+                <i class="fa-solid fa-bottle-water"></i>
+                <span>HIDRATAÇÃO TECH</span>
+            </div>
+            <div class="cat-btn" onclick="showProducts('force')">
+                <i class="fa-solid fa-dumbbell"></i>
+                <span>FORÇA BRUTA</span>
+            </div>
+            <div class="cat-btn" onclick="showProducts('recovery')">
+                <i class="fa-solid fa-snowflake"></i>
+                <span>RECOVERY</span>
+            </div>
+            <div class="cat-btn" onclick="showProducts('gear')">
+                <i class="fa-solid fa-vest"></i>
+                <span>EQUIPAMENTOS</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- FEED DE PRODUTOS DINÂMICO -->
+    <div id="product-feed">
+        <div class="close-feed" onclick="closeFeed()"><i class="fa-solid fa-xmark"></i></div>
+        <div id="feed-container">
+            <!-- Os produtos entram aqui via JS -->
+        </div>
+    </div>
+
+    <!-- RODAPÉ LOGÍSTICO -->
+    <div class="delivery-bar">
+        <div class="del-box">
+            <small>Cuiabá (Z. Verde)</small>
+            <strong>30 MIN</strong>
+        </div>
+        <div class="del-box">
+            <small>Várzea Grande</small>
+            <strong>60-90 MIN</strong>
+        </div>
+    </div>
+
+    <script>
+        const products = {
+            hidra: [
+                { name: "GARRAFA MAGSAFE", desc: "Tampa magnética para fixar iPhone. Aço inox 304. Grave seus Reels com estabilidade.", price: "159,90", kw: "magsafe water bottle" },
+                { name: "SHAKER VORTEX", desc: "Mistura magnética recarregável USB. Whey cremoso sem esforço.", price: "129,90", kw: "protein shaker electric" },
+                { name: "GALÃO INOX 3.8L", desc: "Gelo por 24h sob o sol de Cuiabá. Aço de parede dupla.", price: "389,00", kw: "stainless steel gallon" },
+                { name: "SHAKER VIDRO", desc: "Borossilicato higiênico com capa de silicone. Zero odores.", price: "95,00", kw: "glass shaker bottle" }
+            ],
+            force: [
+                { name: "LEVER BELT 13MM", desc: "Cinturão de alavanca oficial. Padrão internacional de Powerlifting.", price: "489,00", kw: "powerlifting lever belt" },
+                { name: "GRIPS CARBONO", desc: "Tração extrema para Crossfit e musculação de elite.", price: "145,00", kw: "gymnastics grips carbon" },
+                { name: "FIGURE 8 STRAPS", desc: "Trava total do pulso na barra. Segurança máxima no Terra.", price: "85,00", kw: "figure 8 lifting straps" }
+            ],
+            recovery: [
+                { name: "TOALHA ICE-TECH", desc: "Resfriamento instantâneo. Chacoalhe para gelar em segundos.", price: "45,00", kw: "cooling towel fitness" }
+            ],
+            gear: [
+                { name: "MOCHILA TACTICAL", desc: "45 Litros, abertura 180º. Robustez militar para seu kit.", price: "369,00", kw: "tactical backpack gym" },
+                { name: "GYM CADDY MAG", desc: "Organizador magnético para celular e chaves. Foco total no treino.", price: "119,00", kw: "magnetic gym caddy" }
+            ]
+        };
+
+        function showProducts(cat) {
+            const container = document.getElementById('feed-container');
+            container.innerHTML = '';
+            
+            products[cat].forEach(p => {
+                // Link automático de imagem profissional baseada na palavra-chave
+                const imgUrl = `https://source.unsplash.com/1080x1920/?${encodeURIComponent(p.kw)}`;
+                
+                container.innerHTML += `
+                    <section class="product-section" style="background-image: url('${imgUrl}')">
+                        <div class="content">
+                            <span class="tag">Destaque em Cuiabá</span>
+                            <h2 class="title">${p.name}</h2>
+                            <span class="price">R$ ${p.price}</span>
+                            <p class="desc">${p.desc}</p>
+                            <a href="https://wa.me/5565999999999?text=Quero o setup: ${p.name}" class="btn-buy">
+                                <i class="fa-brands fa-whatsapp"></i> RECEBER EM 45 MIN
+                            </a>
+                        </div>
+                    </section>
+                `;
+            });
+
+            document.getElementById('product-feed').style.display = 'block';
+        }
+
+        function closeFeed() {
+            document.getElementById('product-feed').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
