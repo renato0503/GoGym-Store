@@ -3,256 +3,870 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GoGym Store | Setup em 45min</title>
+    <title>GoGym Store | Ultimate App</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Fontes Premium -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&family=Inter:wght@300;400;600;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Ícones FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        /* --- RESET E VARIÁVEIS GLOBAIS --- */
         :root {
-            --bg-pure: #050505;
-            --bg-card: #121212;
-            --neon: #ccff00;
-            --neon-glow: rgba(204, 255, 0, 0.4);
-            --orange: #ff6b00;
-            --text-gray: #a0a0a0;
+            --bg-deep: #050505;
+            --bg-card: #0f0f0f;
+            --bg-glass: rgba(20, 20, 20, 0.85);
+            
+            --neon-yellow: #ccff00;
+            --neon-glow: rgba(204, 255, 0, 0.25);
+            --orange-alert: #ff5e00;
+            --blue-tech: #00f2ff;
+            
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            
+            --border-dim: #222222;
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
 
         body {
-            background-color: var(--bg-pure);
-            color: white;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
+            overflow: hidden; /* App-like feel */
+            height: 100vh;
+            width: 100vw;
         }
 
-        h1, h2, h3, .btn-buy, .category-name {
+        /* --- TIPOGRAFIA --- */
+        h1, h2, h3, .brand-font {
             font-family: 'Montserrat', sans-serif;
             text-transform: uppercase;
             font-weight: 900;
+            letter-spacing: -0.5px;
+        }
+
+        .tech-font {
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+        }
+
+        /* --- UI COMPONENTS --- */
+        .btn-neon {
+            background: var(--neon-yellow);
+            color: black;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 0 15px var(--neon-glow);
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        .btn-neon:active {
+            transform: scale(0.96);
+            box-shadow: 0 0 5px var(--neon-glow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+        }
+
+        .scarcity-badge {
+            background: var(--orange-alert);
+            color: white;
+            font-size: 0.6rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 800;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 10px rgba(255, 94, 0, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         /* --- HEADER --- */
         header {
-            padding: 30px 20px;
-            text-align: center;
-            background: var(--bg-pure);
-            border-bottom: 1px solid #1a1a1a;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(180deg, rgba(5,5,5,0.9) 0%, rgba(5,5,5,0) 100%);
         }
 
-        .logo { font-size: 1.8rem; color: var(--neon); letter-spacing: -1px; line-height: 1; }
-        .logo span { display: block; font-size: 0.65rem; color: white; letter-spacing: 2px; margin-top: 5px; font-weight: 400; }
+        .logo-container h1 {
+            font-size: 1.4rem;
+            color: var(--neon-yellow);
+            line-height: 1;
+        }
+        .logo-container span {
+            display: block;
+            font-size: 0.55rem;
+            color: white;
+            letter-spacing: 2px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
 
-        /* --- CATEGORIAS (MENU INICIAL) --- */
-        #home-screen { padding: 20px; }
-        .welcome-msg { margin-bottom: 25px; text-align: center; color: var(--text-gray); font-size: 0.85rem; }
+        .cart-trigger {
+            position: relative;
+            font-size: 1.2rem;
+            color: white;
+            background: rgba(255,255,255,0.1);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+        }
 
-        .cat-grid {
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--orange-alert);
+            font-size: 0.7rem;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 800;
+        }
+
+        /* --- HOME SCREEN (DASHBOARD) --- */
+        #home-dashboard {
+            height: 100%;
+            overflow-y: auto;
+            padding: 90px 20px 120px 20px;
+            transition: var(--transition);
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            border: 1px solid var(--border-dim);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-card::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 100px; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(204,255,0,0.05));
+        }
+
+        .welcome-card h2 { font-size: 1.2rem; margin-bottom: 5px; }
+        .welcome-card p { font-size: 0.8rem; color: var(--text-muted); max-width: 80%; }
+        
+        .eta-display {
+            margin-top: 15px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.9rem;
+            color: var(--neon-yellow);
+            font-weight: 700;
+        }
+
+        /* GRID DE CATEGORIAS */
+        .categories-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
         }
 
-        .cat-btn {
+        .cat-card {
             background: var(--bg-card);
-            border: 1px solid #222;
-            padding: 30px 15px;
-            border-radius: 20px;
+            border-radius: 18px;
+            padding: 25px 15px;
             text-align: center;
+            border: 1px solid var(--border-dim);
+            transition: var(--transition);
             cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .cat-btn i { font-size: 2rem; color: var(--neon); margin-bottom: 15px; display: block; }
-        .cat-btn span { font-size: 0.75rem; color: white; letter-spacing: 1px; }
-
-        .cat-btn:active { border-color: var(--neon); transform: scale(0.95); }
-
-        /* --- LISTA DE PRODUTOS (SCROLL SNAP) --- */
-        #product-feed {
-            display: none;
-            height: 100vh;
-            overflow-y: scroll;
-            scroll-snap-type: y mandatory;
-            position: fixed;
-            top: 0; left: 0; width: 100%; z-index: 2000;
-            background: var(--bg-pure);
-        }
-
-        .product-section {
-            height: 100vh;
-            scroll-snap-align: start;
             position: relative;
+            overflow: hidden;
+        }
+
+        .cat-card:active { transform: scale(0.98); background: #151515; }
+
+        .cat-card i {
+            font-size: 2rem;
+            color: var(--neon-yellow);
+            margin-bottom: 15px;
+            display: block;
+            text-shadow: 0 0 15px rgba(204,255,0,0.2);
+        }
+
+        .cat-card h3 { font-size: 0.75rem; letter-spacing: 1px; color: white; }
+        .cat-card p { font-size: 0.6rem; color: var(--text-muted); margin-top: 5px; }
+
+        /* --- FEED DE PRODUTOS (FULLSCREEN OVERLAY) --- */
+        #product-feed-layer {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: var(--bg-deep);
+            z-index: 500;
+            transform: translateY(100%);
+            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
-            padding: 40px 20px 110px 20px;
-            background-size: cover;
-            background-position: center;
-            background-color: #111;
         }
 
-        .product-section::after {
+        #product-feed-layer.active { transform: translateY(0); }
+
+        .feed-header {
+            position: absolute;
+            top: 0; left: 0; width: 100%;
+            padding: 20px;
+            z-index: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+        }
+
+        .btn-close-feed {
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px; height: 40px;
+            display: flex; justify-content: center; align-items: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            backdrop-filter: blur(4px);
+        }
+
+        /* SCROLL SNAP CONTAINER */
+        .snap-container {
+            flex: 1;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        .product-slide {
+            height: 100vh;
+            width: 100%;
+            scroll-snap-align: start;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* GRADIENTE DE LEITURA */
+        .product-slide::before {
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(0deg, var(--bg-pure) 20%, transparent 80%);
-            z-index: 1;
+            background: linear-gradient(0deg, #050505 10%, rgba(5,5,5,0.9) 35%, rgba(5,5,5,0.2) 60%, rgba(5,5,5,0.4) 100%);
         }
 
-        .close-feed {
+        .product-content {
             position: absolute;
-            top: 30px; left: 20px;
-            z-index: 3000;
-            background: rgba(0,0,0,0.6);
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            border: 1px solid var(--neon);
-            color: var(--neon);
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 20px 40px 20px;
+            z-index: 10;
         }
 
-        /* --- CONTEÚDO DO PRODUTO --- */
-        .content { position: relative; z-index: 2; }
-        .tag { background: var(--orange); font-size: 0.6rem; padding: 4px 8px; border-radius: 4px; font-weight: 800; margin-bottom: 10px; display: inline-block; }
-        .title { font-size: 2.5rem; line-height: 0.85; margin-bottom: 15px; color: white; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        .price { color: var(--neon); font-size: 1.5rem; margin-bottom: 15px; display: block; }
-        .desc { font-size: 0.9rem; color: #ccc; margin-bottom: 25px; line-height: 1.4; }
-
-        .btn-buy {
-            background: var(--neon);
-            color: black;
-            padding: 20px;
-            border-radius: 15px;
-            text-decoration: none;
-            display: flex; justify-content: center; align-items: center; gap: 10px;
-            box-shadow: 0 0 20px var(--neon-glow);
-            font-size: 1rem;
+        .p-title {
+            font-size: 2rem;
+            line-height: 0.95;
+            margin-bottom: 10px;
+            color: white;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.8);
         }
 
-        /* --- FOOTER ENTREGA --- */
-        .delivery-bar {
+        .p-price {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.8rem;
+            color: var(--neon-yellow);
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .p-desc {
+            font-size: 0.9rem;
+            color: #d0d0d0;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            max-width: 95%;
+        }
+
+        .actions-row {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 10px;
+        }
+
+        /* --- MODAL DE DETALHES --- */
+        .modal-overlay {
             position: fixed;
-            bottom: 0; width: 100%;
-            background: rgba(5,5,5,0.95);
-            backdrop-filter: blur(10px);
-            padding: 15px 20px;
-            display: flex; justify-content: space-around;
-            border-top: 1px solid var(--neon);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
             z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: flex-end; /* Sheet style */
         }
 
-        .del-box { text-align: center; }
-        .del-box small { font-size: 0.6rem; color: var(--text-gray); display: block; text-transform: uppercase; }
-        .del-box strong { font-size: 0.85rem; color: var(--neon); }
+        .modal-sheet {
+            background: #151515;
+            width: 100%;
+            max-height: 85vh;
+            border-radius: 25px 25px 0 0;
+            padding: 30px 25px;
+            border-top: 1px solid var(--neon-yellow);
+            overflow-y: auto;
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .spec-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #222;
+        }
+        .spec-label { color: var(--text-muted); font-size: 0.85rem; }
+        .spec-value { color: white; font-weight: 600; font-size: 0.9rem; text-align: right; }
+
+        /* --- CARRINHO (CART) --- */
+        #cart-modal {
+            z-index: 1100;
+        }
+
+        .cart-item {
+            background: #222;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cart-item h4 { font-size: 0.9rem; margin-bottom: 4px; }
+        .cart-item p { color: var(--neon-yellow); font-size: 0.8rem; }
+        .remove-btn { color: #ff4444; font-size: 1.2rem; cursor: pointer; padding: 5px; }
+
+        /* --- RODAPÉ FIXO --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            background: #0a0a0a;
+            border-top: 1px solid #222;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            z-index: 90;
+        }
+        .nav-item { text-align: center; opacity: 0.6; font-size: 0.7rem; color: white; }
+        .nav-item.active { opacity: 1; color: var(--neon-yellow); }
+        .nav-item i { font-size: 1.2rem; margin-bottom: 4px; display: block; }
 
     </style>
 </head>
 <body>
 
+    <!-- Header Principal -->
     <header id="main-header">
-        <div class="logo">
-            GOGYM
-            <span>O SETUP DO SEU TREINO EM 45 MINUTOS</span>
+        <div class="logo-container">
+            <h1>GOGYM</h1>
+            <span>ULTIMATE STORE</span>
+        </div>
+        <div class="cart-trigger" onclick="toggleCart()">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <div class="cart-count" id="cart-counter">0</div>
         </div>
     </header>
 
-    <!-- TELA INICIAL: CATEGORIAS -->
-    <main id="home-screen">
-        <p class="welcome-msg">O que vamos evoluir no seu setup hoje?</p>
+    <!-- TELA INICIAL (DASHBOARD) -->
+    <main id="home-dashboard">
         
-        <div class="cat-grid">
-            <div class="cat-btn" onclick="showProducts('hidra')">
-                <i class="fa-solid fa-bottle-water"></i>
-                <span>HIDRATAÇÃO TECH</span>
-            </div>
-            <div class="cat-btn" onclick="showProducts('force')">
-                <i class="fa-solid fa-dumbbell"></i>
-                <span>FORÇA BRUTA</span>
-            </div>
-            <div class="cat-btn" onclick="showProducts('recovery')">
-                <i class="fa-solid fa-snowflake"></i>
-                <span>RECOVERY</span>
-            </div>
-            <div class="cat-btn" onclick="showProducts('gear')">
-                <i class="fa-solid fa-vest"></i>
-                <span>EQUIPAMENTOS</span>
+        <div class="welcome-card">
+            <span class="scarcity-badge">STATUS DA LOJA: ONLINE</span>
+            <h2>SETUP DE ELITE EM 45 MIN</h2>
+            <p>Logística expressa para Cuiabá e Várzea Grande. O calor não espera, seu treino também não.</p>
+            <div class="eta-display">
+                <i class="fa-solid fa-clock"></i> PEÇA AGORA, RECEBA ATÉ <span id="eta-time">--:--</span>
             </div>
         </div>
+
+        <h3 style="margin-bottom: 15px; font-size: 0.9rem; color: #666; padding-left: 5px;">DEPARTAMENTOS</h3>
+        
+        <div class="categories-grid">
+            <div class="cat-card" onclick="openCategory('hidra')">
+                <i class="fa-solid fa-bottle-water"></i>
+                <h3>HIDRATAÇÃO TECH</h3>
+                <p>MagSafe, Térmicas & Vidro</p>
+            </div>
+            
+            <div class="cat-card" onclick="openCategory('forca')">
+                <i class="fa-solid fa-dumbbell"></i>
+                <h3>FORÇA BRUTA</h3>
+                <p>Belts, Straps & Sleeves</p>
+            </div>
+            
+            <div class="cat-card" onclick="openCategory('acessorios')">
+                <i class="fa-solid fa-masks-theater"></i> <!-- Usando ícone genérico para gear -->
+                <i class="fa-solid fa-backpack" style="margin-top:-25px; display:block;"></i>
+                <h3>EQUIPAMENTOS</h3>
+                <p>Mochilas, Grips & Caddy</p>
+            </div>
+            
+            <div class="cat-card" onclick="openCategory('recovery')">
+                <i class="fa-solid fa-snowflake"></i>
+                <h3>RECOVERY</h3>
+                <p>Gelo, Massagem & Proteção</p>
+            </div>
+
+            <div class="cat-card" style="grid-column: span 2; background: linear-gradient(90deg, #1a1a1a, #0d0d0d);" onclick="toggleSupport()">
+                <i class="fa-brands fa-whatsapp" style="display:inline; font-size: 1.2rem; margin-right: 10px;"></i>
+                <span style="font-size: 0.8rem; font-weight: 700;">FALAR COM ESPECIALISTA</span>
+            </div>
+        </div>
+
+        <div style="height: 50px;"></div> <!-- Espaçador -->
     </main>
 
-    <!-- FEED DE PRODUTOS DINÂMICO -->
-    <div id="product-feed">
-        <div class="close-feed" onclick="closeFeed()"><i class="fa-solid fa-xmark"></i></div>
-        <div id="feed-container">
-            <!-- Os produtos entram aqui via JS -->
+    <!-- LAYER DO FEED DE PRODUTOS (OVERLAY) -->
+    <div id="product-feed-layer">
+        <div class="feed-header">
+            <h3 id="feed-title" style="color:white; font-size:1rem;">CATEGORIA</h3>
+            <div class="btn-close-feed" onclick="closeFeed()">
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+        </div>
+        
+        <div class="snap-container" id="feed-content">
+            <!-- Produtos injetados via JS -->
         </div>
     </div>
 
-    <!-- RODAPÉ LOGÍSTICO -->
-    <div class="delivery-bar">
-        <div class="del-box">
-            <small>Cuiabá (Z. Verde)</small>
-            <strong>30 MIN</strong>
+    <!-- MODAL DE DETALHES TÉCNICOS -->
+    <div class="modal-overlay" id="tech-modal" onclick="closeModal(event, 'tech-modal')">
+        <div class="modal-sheet" onclick="event.stopPropagation()">
+            <h2 id="modal-title" style="color:var(--neon-yellow); margin-bottom:20px;">NOME DO PRODUTO</h2>
+            <p id="modal-desc" style="color:#ccc; margin-bottom:20px; font-size:0.9rem; line-height:1.6;"></p>
+            
+            <h4 class="tech-font" style="color:white; border-bottom:1px solid #333; padding-bottom:10px; margin-bottom:15px;">ESPECIFICAÇÕES</h4>
+            <div id="modal-specs">
+                <!-- Specs injetadas -->
+            </div>
+
+            <button class="btn-neon" onclick="closeModal(null, 'tech-modal')" style="margin-top:30px; background:#333; color:white; box-shadow:none;">
+                FECHAR FICHA
+            </button>
         </div>
-        <div class="del-box">
-            <small>Várzea Grande</small>
-            <strong>60-90 MIN</strong>
+    </div>
+
+    <!-- MODAL DO CARRINHO -->
+    <div class="modal-overlay" id="cart-modal" onclick="closeModal(event, 'cart-modal')">
+        <div class="modal-sheet" onclick="event.stopPropagation()">
+            <h2 style="color:var(--neon-yellow); margin-bottom:10px;">SUA MOCHILA</h2>
+            <p style="font-size:0.8rem; color:#888; margin-bottom:20px;">Itens reservados por 15 minutos.</p>
+            
+            <div id="cart-items-container" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px;">
+                <!-- Itens do carrinho -->
+                <p style="text-align:center; color:#555; padding: 20px;">Sua mochila está vazia.</p>
+            </div>
+
+            <div class="spec-row" style="border-top: 1px solid #333; border-bottom:none; margin-top:10px;">
+                <span class="spec-label" style="font-size:1rem; color:white;">TOTAL ESTIMADO</span>
+                <span class="spec-value" style="font-size:1.2rem; color:var(--neon-yellow);" id="cart-total">R$ 0,00</span>
+            </div>
+
+            <button class="btn-neon" onclick="finalizeCheckout()">
+                <i class="fa-brands fa-whatsapp"></i> FINALIZAR COMPRA
+            </button>
+        </div>
+    </div>
+
+    <!-- NAVBAR INFERIOR (VISUAL) -->
+    <div class="bottom-nav">
+        <div class="nav-item active">
+            <i class="fa-solid fa-store"></i>
+            LOJA
+        </div>
+        <div class="nav-item">
+            <i class="fa-solid fa-map-location-dot"></i>
+            TRACKING
+        </div>
+        <div class="nav-item" onclick="toggleCart()">
+            <i class="fa-solid fa-bag-shopping"></i>
+            BAG
         </div>
     </div>
 
     <script>
-        const products = {
+        /* --- BANCO DE DADOS COMPLETO --- */
+        /* Imagens reais puxadas do Unsplash Source com keywords específicas para garantir qualidade */
+        const DB = {
             hidra: [
-                { name: "GARRAFA MAGSAFE", desc: "Tampa magnética para fixar iPhone. Aço inox 304. Grave seus Reels com estabilidade.", price: "159,90", kw: "magsafe water bottle" },
-                { name: "SHAKER VORTEX", desc: "Mistura magnética recarregável USB. Whey cremoso sem esforço.", price: "129,90", kw: "protein shaker electric" },
-                { name: "GALÃO INOX 3.8L", desc: "Gelo por 24h sob o sol de Cuiabá. Aço de parede dupla.", price: "389,00", kw: "stainless steel gallon" },
-                { name: "SHAKER VIDRO", desc: "Borossilicato higiênico com capa de silicone. Zero odores.", price: "95,00", kw: "glass shaker bottle" }
+                {
+                    id: 'h1',
+                    name: "GARRAFA MAGSAFE PRO",
+                    price: 159.90,
+                    desc: "A revolução dos treinos. Tampa com anel magnético N52 forte o suficiente para segurar qualquer iPhone (ou Android com anel). Filme seus sets sem precisar de tripé.",
+                    imgKw: "black gym water bottle metal",
+                    specs: { "Material": "Aço Inox 304", "Capacidade": "950ml", "Térmica": "24h Gelado / 12h Quente", "Compatibilidade": "MagSafe / Anel Universal" }
+                },
+                {
+                    id: 'h2',
+                    name: "SHAKER VORTEX ELETRIC",
+                    price: 139.00,
+                    desc: "Motor de 11.000 RPM integrado. Esqueça pelotas de whey. Cria um vortex que mistura suplementos e frutas macias em segundos. Bateria recarregável.",
+                    imgKw: "protein shaker bottle electric",
+                    specs: { "Motor": "11k RPM", "Bateria": "USB-C (30 usos)", "Material": "Tritan (BPA Free)", "Capacidade": "600ml" }
+                },
+                {
+                    id: 'h3',
+                    name: "GALÃO TÉRMICO 2.5L",
+                    price: 289.90,
+                    desc: "O gigante de aço. Parede dupla com isolamento a vácuo. Água gelada o dia inteiro, mesmo se deixar no carro sob o sol de Cuiabá.",
+                    imgKw: "large black water jug gym",
+                    specs: { "Isolamento": "Vácuo Parede Dupla", "Alça": "Paracord Tático", "Tampa": "Flip Anti-vazamento", "Peso Vazio": "800g" }
+                },
+                {
+                    id: 'h4',
+                    name: "COPO TÉRMICO DAILY",
+                    price: 89.90,
+                    desc: "Estilo Stanley, mas com a pegada GoGym. Preto fosco, logo a laser. Para café pré-treino ou água no escritório.",
+                    imgKw: "black thermal cup",
+                    specs: { "Capacidade": "473ml", "Material": "Aço Inox 18/8", "Tampa": "Com abridor", "Cor": "Matte Black" }
+                }
             ],
-            force: [
-                { name: "LEVER BELT 13MM", desc: "Cinturão de alavanca oficial. Padrão internacional de Powerlifting.", price: "489,00", kw: "powerlifting lever belt" },
-                { name: "GRIPS CARBONO", desc: "Tração extrema para Crossfit e musculação de elite.", price: "145,00", kw: "gymnastics grips carbon" },
-                { name: "FIGURE 8 STRAPS", desc: "Trava total do pulso na barra. Segurança máxima no Terra.", price: "85,00", kw: "figure 8 lifting straps" }
+            forca: [
+                {
+                    id: 'f1',
+                    name: "LEVER BELT 13MM",
+                    price: 489.00,
+                    desc: "O cinto definitivo. 13mm de espessura para suporte máximo na lombar. Fivela de alavanca (Lever) em aço inoxidável cromado. Destrave em 1 segundo entre séries.",
+                    imgKw: "powerlifting belt black leather",
+                    specs: { "Espessura": "13mm", "Material": "Couro Suede/Legítimo", "Fivela": "Aço Cromado", "Garantia": "Vitalícia na alavanca" }
+                },
+                {
+                    id: 'f2',
+                    name: "STRAPS FIGURE 8",
+                    price: 89.00,
+                    desc: "Trava sua mão na barra. Diferente dos straps comuns, o Figure 8 elimina totalmente a necessidade de força de pegada. Foco 100% nas costas/pernas.",
+                    imgKw: "weightlifting straps gym",
+                    specs: { "Tipo": "Figure 8 (Loop Duplo)", "Material": "Algodão Heavy Duty", "Costura": "Reforçada em X", "Carga Máx": "400kg" }
+                },
+                {
+                    id: 'f3',
+                    name: "JOELHEIRA NEOPRENE 7MM",
+                    price: 199.00,
+                    desc: "Compressão e calor para articulações. Neoprene SBR de 7mm. Ideal para agachamento pesado e prevenção de lesões.",
+                    imgKw: "knee sleeves gym black",
+                    specs: { "Espessura": "7mm", "Material": "Neoprene SBR", "Venda": "Par", "Design": "Ergonômico 3D" }
+                },
+                {
+                    id: 'f4',
+                    name: "WRIST WRAPS PRO",
+                    price: 79.90,
+                    desc: "Munhequeira elástica rígida. Estabilidade total para Supino e Desenvolvimento. Evite dores no pulso.",
+                    imgKw: "wrist wraps powerlifting",
+                    specs: { "Comprimento": "60cm", "Velcro": "Militar Largo", "Elástico": "Alta Tensão", "Loop": "Dedão Reforçado" }
+                }
+            ],
+            acessorios: [
+                {
+                    id: 'a1',
+                    name: "MOCHILA TACTICAL 45L",
+                    price: 379.00,
+                    desc: "Espaço para tudo. Abertura 180 graus (clamshell). Compartimento para tênis, notebook e marmitas. Velcro frontal para patches.",
+                    imgKw: "tactical backpack black military",
+                    specs: { "Volume": "45 Litros", "Tecido": "Oxford 900D (Impermeável)", "Zíper": "Duplo Reforçado", "MOLLE": "Sistema frontal e lateral" }
+                },
+                {
+                    id: 'a2',
+                    name: "GYM CADDY MAGNETIC",
+                    price: 119.00,
+                    desc: "Organizador magnético. Gruda no rack do agachamento ou máquina. Segura celular, chaves, fone e garrafa. Pare de jogar suas coisas no chão sujo.",
+                    imgKw: "gym magnetic phone holder",
+                    specs: { "Ímãs": "Neodímio x2", "Material": "Silicone Antiderrapante", "Compatível": "Qualquer superfície metálica", "Tamanho": "Compacto" }
+                },
+                {
+                    id: 'a3',
+                    name: "GRIPS FIBRA DE CARBONO",
+                    price: 145.00,
+                    desc: "Para quem faz Cross ou barra fixa. Material sintético estilo fibra de carbono que 'gruda' na barra. Protege a mão de calos abertos.",
+                    imgKw: "gymnastics grips crossfit",
+                    specs: { "Material": "Sintético Carbon Fiber", "Furos": "Sem furos (Speed)", "Munhequeira": "Integrada", "Espessura": "2mm" }
+                },
+                {
+                    id: 'a4',
+                    name: "MAGNÉSIO LÍQUIDO",
+                    price: 45.00,
+                    desc: "Aderência sem sujeira. Seca em 10 segundos na mão. Não faz nuvem de pó na academia.",
+                    imgKw: "liquid chalk gym bottle",
+                    specs: { "Volume": "200ml", "Álcool": "70%", "Duração": "Aprox. 100 treinos", "Resíduo": "Mínimo" }
+                }
             ],
             recovery: [
-                { name: "TOALHA ICE-TECH", desc: "Resfriamento instantâneo. Chacoalhe para gelar em segundos.", price: "45,00", kw: "cooling towel fitness" }
-            ],
-            gear: [
-                { name: "MOCHILA TACTICAL", desc: "45 Litros, abertura 180º. Robustez militar para seu kit.", price: "369,00", kw: "tactical backpack gym" },
-                { name: "GYM CADDY MAG", desc: "Organizador magnético para celular e chaves. Foco total no treino.", price: "119,00", kw: "magnetic gym caddy" }
+                {
+                    id: 'r1',
+                    name: "TOALHA ICE-TECH",
+                    price: 49.00,
+                    desc: "Obrigatório em Cuiabá. Tecido tecnológico que esfria 10ºC abaixo da temperatura ambiente quando molhado e agitado.",
+                    imgKw: "cooling towel sports blue",
+                    specs: { "Tamanho": "30x100cm", "Tecnologia": "Evaporação Ativa", "Proteção": "UV 50+", "Embalagem": "Pote com mosquetão" }
+                },
+                {
+                    id: 'r2',
+                    name: "PISTOLA MASSAGEADORA",
+                    price: 299.00,
+                    desc: "Soltura miofascial portátil. 4 cabeças e 6 velocidades. Alivia a dor muscular pós-treino imediatamente.",
+                    imgKw: "massage gun black muscle",
+                    specs: { "Bateria": "2h Duração", "Velocidades": "6 Níveis", "Ruído": "Silencioso (<45dB)", "Peso": "900g" }
+                },
+                {
+                    id: 'r3',
+                    name: "FOAM ROLLER GRID",
+                    price: 89.00,
+                    desc: "Rolo de liberação com textura grid que simula o toque dos dedos. Essencial para coluna e pernas.",
+                    imgKw: "foam roller black gym",
+                    specs: { "Núcleo": "PVC Rígido", "Revestimento": "EVA Alta Densidade", "Suporte": "Até 150kg", "Tamanho": "33cm" }
+                }
             ]
         };
 
-        function showProducts(cat) {
-            const container = document.getElementById('feed-container');
-            container.innerHTML = '';
-            
-            products[cat].forEach(p => {
-                // Link automático de imagem profissional baseada na palavra-chave
-                const imgUrl = `https://source.unsplash.com/1080x1920/?${encodeURIComponent(p.kw)}`;
+        /* --- LÓGICA DO CARRINHO --- */
+        let cart = [];
+
+        function addToCart(productId, cat) {
+            const product = DB[cat].find(p => p.id === productId);
+            if(product) {
+                cart.push(product);
+                updateCartUI();
                 
-                container.innerHTML += `
-                    <section class="product-section" style="background-image: url('${imgUrl}')">
-                        <div class="content">
-                            <span class="tag">Destaque em Cuiabá</span>
-                            <h2 class="title">${p.name}</h2>
-                            <span class="price">R$ ${p.price}</span>
-                            <p class="desc">${p.desc}</p>
-                            <a href="https://wa.me/5565999999999?text=Quero o setup: ${p.name}" class="btn-buy">
-                                <i class="fa-brands fa-whatsapp"></i> RECEBER EM 45 MIN
-                            </a>
+                // Feedback visual simples
+                const btn = event.target.closest('button');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = "<i class='fa-solid fa-check'></i> NA MOCHILA";
+                btn.style.background = "#fff";
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = "var(--neon-yellow)";
+                }, 1500);
+            }
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const counter = document.getElementById('cart-counter');
+            counter.innerText = cart.length;
+            
+            // Animação do contador
+            counter.style.transform = "scale(1.2)";
+            setTimeout(() => counter.style.transform = "scale(1)", 200);
+
+            // Renderizar lista no modal
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = "";
+            let total = 0;
+
+            if(cart.length === 0) {
+                container.innerHTML = "<p style='text-align:center; color:#555; padding: 20px;'>Sua mochila está vazia.</p>";
+            } else {
+                cart.forEach((item, index) => {
+                    total += item.price;
+                    container.innerHTML += `
+                        <div class="cart-item">
+                            <div>
+                                <h4>${item.name}</h4>
+                                <p>R$ ${item.price.toFixed(2)}</p>
+                            </div>
+                            <div class="remove-btn" onclick="removeFromCart(${index})">
+                                <i class="fa-solid fa-trash"></i>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('cart-total').innerText = "R$ " + total.toFixed(2);
+        }
+
+        function toggleCart() {
+            const modal = document.getElementById('cart-modal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        /* --- LÓGICA DA VITRINE (FEED) --- */
+        function openCategory(catKey) {
+            const feedLayer = document.getElementById('product-feed-layer');
+            const feedContent = document.getElementById('feed-content');
+            const feedTitle = document.getElementById('feed-title');
+            
+            // Define Título
+            const titles = { 'hidra': 'HIDRATAÇÃO TECH', 'forca': 'FORÇA & POWER', 'acessorios': 'EQUIPAMENTOS', 'recovery': 'RECOVERY' };
+            feedTitle.innerText = titles[catKey];
+
+            // Renderiza Produtos
+            feedContent.innerHTML = '';
+            
+            DB[catKey].forEach(item => {
+                // Monta URL da imagem (usando Unsplash Source com keywords)
+                // Usamos um parametro random para evitar cache igual para todos
+                const imgUrl = `https://source.unsplash.com/1080x1920/?${encodeURIComponent(item.imgKw)}&sig=${item.id}`;
+                
+                // Monta HTML do Card
+                const html = `
+                    <section class="product-slide" style="background-image: url('${imgUrl}')">
+                        <div class="product-content">
+                            <span class="scarcity-badge">ESTOQUE CUIABÁ: BAIXO</span>
+                            <h2 class="p-title">${item.name}</h2>
+                            <span class="p-price">R$ ${item.price.toFixed(2)}</span>
+                            <p class="p-desc">${item.desc}</p>
+                            
+                            <div class="actions-row">
+                                <button class="btn-outline" onclick="openTechSpecs('${catKey}', '${item.id}')">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                </button>
+                                <button class="btn-neon" onclick="addToCart('${item.id}', '${catKey}')">
+                                    <i class="fa-solid fa-cart-plus"></i> ADICIONAR
+                                </button>
+                            </div>
                         </div>
                     </section>
                 `;
+                feedContent.innerHTML += html;
             });
 
-            document.getElementById('product-feed').style.display = 'block';
+            feedLayer.classList.add('active');
         }
 
         function closeFeed() {
-            document.getElementById('product-feed').style.display = 'none';
+            document.getElementById('product-feed-layer').classList.remove('active');
         }
+
+        /* --- LÓGICA DE DETALHES TÉCNICOS --- */
+        function openTechSpecs(cat, id) {
+            const product = DB[cat].find(p => p.id === id);
+            const modal = document.getElementById('tech-modal');
+            
+            document.getElementById('modal-title').innerText = product.name;
+            document.getElementById('modal-desc').innerText = product.desc;
+            
+            const specsContainer = document.getElementById('modal-specs');
+            specsContainer.innerHTML = '';
+            
+            for (const [key, value] of Object.entries(product.specs)) {
+                specsContainer.innerHTML += `
+                    <div class="spec-row">
+                        <span class="spec-label">${key}</span>
+                        <span class="spec-value">${value}</span>
+                    </div>
+                `;
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeModal(e, id) {
+            if(e && e.target.id !== id) return; // Se clicou fora
+            document.getElementById(id).style.display = 'none';
+        }
+
+        /* --- FINALIZAÇÃO WHATSAPP --- */
+        function finalizeCheckout() {
+            if(cart.length === 0) {
+                alert("Sua mochila está vazia!");
+                return;
+            }
+
+            const phone = "5567993515206";
+            let msg = "*NOVO PEDIDO - GOGYM APP*\n\n";
+            let total = 0;
+            
+            cart.forEach(item => {
+                msg += `▪ ${item.name} - R$ ${item.price.toFixed(2)}\n`;
+                total += item.price;
+            });
+            
+            msg += `\n*TOTAL: R$ ${total.toFixed(2)}*`;
+            msg += `\n\n------------------------------`;
+            msg += `\n📍 *Entrega:* Cuiabá/VG`;
+            msg += `\n🕒 *ETA:* 45-60 min`;
+            msg += `\n\nAguardo confirmação do PIX!`;
+
+            const link = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+            window.open(link, '_blank');
+        }
+
+        function toggleSupport() {
+             window.open('https://wa.me/5567993515206?text=Olá, preciso de ajuda com um equipamento.', '_blank');
+        }
+
+        /* --- AUXILIARES --- */
+        // Atualiza ETA (Hora atual + 45min)
+        function updateTime() {
+            const now = new Date();
+            now.setMinutes(now.getMinutes() + 45);
+            const timeStr = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('eta-time').innerText = timeStr;
+        }
+        setInterval(updateTime, 60000);
+        updateTime();
+
     </script>
 </body>
 </html>
