@@ -126,17 +126,36 @@
         /* --- TRACKING VIEW (REAL MAP) --- */
         #view-tracking { 
             background: #080808; 
-            overflow: hidden; /* Remove scroll para o mapa ocupar tudo */
+            overflow: hidden; 
             padding-bottom: 0;
         }
         
         #real-map {
-            height: 65vh;
+            height: 60vh;
             width: 100%;
             z-index: 1;
         }
 
-        /* Customização do Popup do Leaflet para ficar Dark */
+        /* Botão Flutuante de Localização */
+        .gps-btn {
+            position: absolute;
+            bottom: 42vh; /* Ajustado para ficar acima da info zone */
+            right: 20px;
+            background: #1a1a1a;
+            color: white;
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 1.2rem;
+            border: 2px solid var(--neon-yellow);
+            z-index: 400; /* Acima do mapa */
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .gps-btn:active { transform: scale(0.9); background: var(--neon-yellow); color: black; }
+
+        /* Customização do Popup do Leaflet */
         .leaflet-popup-content-wrapper, .leaflet-popup-tip {
             background: #111;
             color: white;
@@ -145,21 +164,44 @@
         }
         .leaflet-popup-content { margin: 10px; font-family: 'Rajdhani', sans-serif; font-weight: 700; }
 
+        /* Marcador de Usuário (Pulsante) */
+        .user-pulse {
+            width: 15px; height: 15px;
+            background: #00f2ff;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.7);
+            animation: pulse-blue 2s infinite;
+        }
+        @keyframes pulse-blue {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(0, 242, 255, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 242, 255, 0); }
+        }
+
         .zone-info { 
             padding: 20px; 
-            height: 35vh; 
+            height: 40vh; 
             background: var(--bg-deep);
             border-top: 2px solid var(--neon-yellow);
             overflow-y: auto;
             position: relative;
             z-index: 2;
-            padding-bottom: 80px;
+            padding-bottom: 90px;
         }
 
         .zone-card {
             background: #1a1a1a; padding: 15px; border-radius: 12px;
-            border-left: 3px solid var(--neon-yellow); margin-bottom: 10px;
+            border-left: 3px solid #333; margin-bottom: 10px;
             display: flex; justify-content: space-between; align-items: center;
+            opacity: 0.6; transition: 0.3s;
+        }
+        /* Classe ativa quando o usuário entra na zona */
+        .zone-card.active-zone {
+            opacity: 1;
+            background: #222;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            border-left-width: 6px;
         }
 
         /* --- PRODUCT FEED (FULLSCREEN) --- */
@@ -269,33 +311,49 @@
     </section>
 
     <section id="view-tracking" class="view-section">
+        <div class="gps-btn" onclick="locateUser()">
+            <i class="fa-solid fa-crosshairs"></i>
+        </div>
+
         <div id="real-map"></div>
 
         <div class="zone-info">
-            <h2 style="margin-bottom: 20px; font-size: 1.2rem;">RAIO DE ENTREGA</h2>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="font-size: 1.2rem;">RAIO DE ENTREGA</h2>
+                <span id="status-location" style="font-size:0.7rem; color:var(--blue-tech);">AGUARDANDO GPS...</span>
+            </div>
             
-            <div class="zone-card">
+            <div class="zone-card" id="card-green" style="border-color: var(--neon-yellow);">
                 <div>
                     <strong style="color: var(--neon-yellow);">ZONA VERDE (CENTRAL)</strong>
                     <p style="font-size: 0.8rem; color: #888;">Santa Rosa, Centro, Duque</p>
                 </div>
-                <div class="tech-font" style="color: white; font-weight: 700;">~20 MIN</div>
+                <div style="text-align:right;">
+                    <div class="tech-font" style="color: white; font-weight: 700;">R$ 15,00</div>
+                    <span style="font-size:0.6rem; color:#666;">~20 MIN</span>
+                </div>
             </div>
 
-            <div class="zone-card" style="border-color: var(--blue-tech);">
+            <div class="zone-card" id="card-blue" style="border-color: var(--blue-tech);">
                 <div>
                     <strong style="color: var(--blue-tech);">ZONA AZUL (CBA)</strong>
                     <p style="font-size: 0.8rem; color: #888;">Demais bairros Cuiabá</p>
                 </div>
-                <div class="tech-font" style="color: white; font-weight: 700;">~45 MIN</div>
+                <div style="text-align:right;">
+                    <div class="tech-font" style="color: white; font-weight: 700;">R$ 25,00</div>
+                    <span style="font-size:0.6rem; color:#666;">~45 MIN</span>
+                </div>
             </div>
 
-            <div class="zone-card" style="border-color: var(--orange-alert);">
+            <div class="zone-card" id="card-orange" style="border-color: var(--orange-alert);">
                 <div>
                     <strong style="color: var(--orange-alert);">ZONA VG (METRO)</strong>
                     <p style="font-size: 0.8rem; color: #888;">Várzea Grande Completa</p>
                 </div>
-                <div class="tech-font" style="color: white; font-weight: 700;">~90 MIN</div>
+                <div style="text-align:right;">
+                    <div class="tech-font" style="color: white; font-weight: 700;">R$ 35,00</div>
+                    <span style="font-size:0.6rem; color:#666;">~90 MIN</span>
+                </div>
             </div>
         </div>
     </section>
@@ -346,84 +404,59 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <script>
-        /* --- BANCO DE DADOS (IMAGENS CORRIGIDAS E REAIS) --- */
+        /* --- BANCO DE DADOS (IMAGENS CORRIGIDAS E ESTÉTICA PREMIUM) --- */
         const DB = {
             hidra: [
-                { id: 'h1', name: "GARRAFA MAGSAFE", price: 159.90, desc: "Aço Inox com anel magnético. Filme seus treinos sem tripé.", img: "https://images.unsplash.com/photo-1602143407151-11115cdbf6e0?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'h2', name: "SHAKER ELÉTRICO", price: 139.00, desc: "Vortex Mixer. Mistura whey e pré-treino instantaneamente.", img: "https://images.unsplash.com/photo-1593091417202-d4d2a8b211f6?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'h3', name: "GALÃO TÁTICO 2L", price: 89.90, desc: "Capa térmica militar e alça de transporte reforçada.", img: "https://images.unsplash.com/photo-1610398000002-f5422582878c?q=80&w=1080&auto=format&fit=crop" }, // Imagem mais robusta
-                { id: 'h4', name: "COPO TÉRMICO", price: 79.90, desc: "Mantém gelado por 12h. Perfeito para o clima de MT.", img: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=1080&auto=format&fit=crop" }
+                { id: 'h1', name: "BLACK OPS 1.5L", price: 159.90, desc: "Aço Inox Militar. Mantém a água gelada por 24h na zona de combate.", img: "https://images.unsplash.com/photo-1627464082852-6d2c0b0df227?q=80&w=1080&auto=format&fit=crop" },
+                { id: 'h2', name: "SHAKER VORTEX", price: 139.00, desc: "Motor elétrico. Mistura perfeita sem grumos. Acabamento Matte.", img: "https://images.unsplash.com/photo-1593091417202-d4d2a8b211f6?q=80&w=1080&auto=format&fit=crop" },
+                { id: 'h3', name: "CANIL TÁTICO", price: 89.90, desc: "Garrafa estilo cantil militar 1L com capa de nylon balístico.", img: "https://images.unsplash.com/photo-1610398000002-f5422582878c?q=80&w=1080&auto=format&fit=crop" },
+                { id: 'h4', name: "COPO COFFEE PRO", price: 79.90, desc: "Térmico para café pré-treino. Tampa à prova de vazamentos.", img: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=1080&auto=format&fit=crop" }
             ],
             forca: [
-                { id: 'f1', name: "CINTURÃO LEVER", price: 489.00, desc: "Fivela de alavanca 13mm. Suporte máximo para Lombar.", img: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1080&auto=format&fit=crop" }, // Gym context
-                { id: 'f2', name: "JOELHEIRA 7MM", price: 199.00, desc: "Neoprene de alta densidade para agachamento pesado.", img: "https://plus.unsplash.com/premium_photo-1664298132924-406ec040051c?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'f3', name: "STRAPS FIGURE 8", price: 85.00, desc: "Travamento total na barra para levantamento terra.", img: "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'f4', name: "MAGNÉSIO LÍQUIDO", price: 45.00, desc: "Grip seco e limpo. Não faz sujeira na academia.", img: "https://images.unsplash.com/photo-1584735935682-2fdd11898612?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'f5', name: "WRIST WRAPS", price: 69.90, desc: "Munhequeira elástica rígida para supino.", img: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=1080&auto=format&fit=crop" }
+                { id: 'f1', name: "LEVER BELT PRO", price: 489.00, desc: "Couro legítimo 13mm. Fivela de aço inoxidável. Estabilidade total.", img: "https://images.unsplash.com/photo-1579364175317-b7336d3953f9?q=80&w=1080&auto=format&fit=crop" },
+                { id: 'f2', name: "JOELHEIRA SBD", price: 199.00, desc: "Neoprene 7mm High Grade. Compressão máxima para Leg Day.", img: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1080&auto=format&fit=crop" },
+                { id: 'f3', name: "STRAPS FIGURE 8", price: 85.00, desc: "Trava total do pulso. Foco total nas costas, zero no antebraço.", img: "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?q=80&w=1080&auto=format&fit=crop" },
+                { id: 'f4', name: "MAGNÉSIO LÍQUIDO", price: 45.00, desc: "Secagem em 10s. Grip absoluto. Sem sujeira.", img: "https://images.unsplash.com/photo-1584735935682-2fdd11898612?q=80&w=1080&auto=format&fit=crop" },
+                { id: 'f5', name: "WRIST WRAPS", price: 69.90, desc: "Estabilidade para supino. Ajuste de tensão velcro.", img: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=1080&auto=format&fit=crop" }
             ],
             acessorios: [
-                { id: 'a1', name: "MOCHILA TÁTICA", price: 379.00, desc: "45 Litros com sistema MOLLE e espaço para patches.", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'a2', name: "BAG CROSSBODY", price: 89.00, desc: "Para levar celular, fone e chaves no treino.", img: "https://images.unsplash.com/photo-1545665277-5937bf04a5bd?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'a3', name: "GYM TOWEL MAG", price: 119.00, desc: "Toalha com imã. Nunca mais coloque a toalha no chão.", img: "https://images.unsplash.com/photo-1590239063630-f421c97a8291?q=80&w=1080&auto=format&fit=crop" }, // Imagem ilustrativa de toalha em gym
-                { id: 'a4', name: "BONÉ PERFORMANCE", price: 69.90, desc: "Tecido Dry-fit com furos a laser. Aba curva.", img: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'a5', name: "HAND GRIPS", price: 145.00, desc: "Couro sintético para proteção no Crossfit e Pull-ups.", img: "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=1080&auto=format&fit=crop" }
+                { id: 'a1', name: "MOCHILA ASSAULT", price: 379.00, desc: "Estilo militar. 45L. Compartimento para tênis e notebook.", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=1080&auto=format&fit=crop" },
+                { id: 'a2', name: "CHEST BAG", price: 89.00, desc: "Bolsa de peito tática. Celular seguro durante a corrida.", img: "https://images.unsplash.com/photo-1545665277-5937bf04a5bd?q=80&w=1080&auto=format&fit=crop" },
+                { id: 'a3', name: "TOALHA MAGNÉTICA", price: 119.00, desc: "Fixa nos aparelhos. Higiene e praticidade.", img: "https://images.unsplash.com/photo-1590239063630-f421c97a8291?q=80&w=1080&auto=format&fit=crop" },
+                { id: 'a4', name: "BONÉ STEALTH", price: 69.90, desc: "Preto fosco. Tecido respirável. Aba curva.", img: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=1080&auto=format&fit=crop" },
+                { id: 'a5', name: "CARBON GRIPS", price: 145.00, desc: "Proteção de palma para Cross e Ginástica. Fibra de carbono.", img: "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=1080&auto=format&fit=crop" }
             ],
             recovery: [
-                { id: 'r1', name: "TOALHA GELADA", price: 49.00, desc: "Tecnologia de resfriamento. Molhe e balance.", img: "https://images.unsplash.com/photo-1616801990453-61b6238b3941?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'r2', name: "FOAM ROLLER", price: 99.00, desc: "Rolo de liberação miofascial texturizado.", img: "https://images.unsplash.com/photo-1600881333168-2ef49b341f30?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'r3', name: "MASSAGE GUN", price: 299.00, desc: "Pistola de massagem percussiva. Solta a musculatura.", img: "https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=1080&auto=format&fit=crop" }
+                { id: 'r1', name: "ICE TOWEL", price: 49.00, desc: "Toalha de resfriamento instantâneo. Essencial em MT.", img: "https://images.unsplash.com/photo-1616801990453-61b6238b3941?q=80&w=1080&auto=format&fit=crop" },
+                { id: 'r2', name: "ROLO MIOFASCIAL", price: 99.00, desc: "Textura grid rígida para soltar a musculatura tensa.", img: "https://images.unsplash.com/photo-1600881333168-2ef49b341f30?q=80&w=1080&auto=format&fit=crop" },
+                { id: 'r3', name: "PISTOLA MASSAGEM", price: 299.00, desc: "Percussão profunda. Acelera a recuperação pós-treino.", img: "https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=1080&auto=format&fit=crop" }
             ]
         };
 
         /* --- INICIALIZAÇÃO DO MAPA (LEAFLET) --- */
-        let map; // Variável global para o mapa
+        let map; 
+        let userMarker;
+        const storeLat = -15.5961;
+        const storeLon = -56.0966;
 
         function initMap() {
-            // Coordenadas Centro Norte, Cuiabá (Aprox)
-            const cuiabaLat = -15.5961;
-            const cuiabaLon = -56.0966;
-
             // Cria o mapa e define o zoom inicial
             map = L.map('real-map', {
-                zoomControl: false, // Remove controles padrão para visual limpo
+                zoomControl: false, 
                 attributionControl: false
-            }).setView([cuiabaLat, cuiabaLon], 12);
+            }).setView([storeLat, storeLon], 12);
 
-            // Adiciona Tile Layer "Dark Matter" (CartoDB)
+            // Adiciona Tile Layer "Dark Matter"
             L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
                 attribution: '&copy; OpenStreetMap &copy; CARTO',
                 subdomains: 'abcd',
                 maxZoom: 19
             }).addTo(map);
 
-            // ZONA VERDE (HUB) - 3km
-            L.circle([cuiabaLat, cuiabaLon], {
-                color: '#ccff00',
-                fillColor: '#ccff00',
-                fillOpacity: 0.15,
-                radius: 3000,
-                weight: 1
-            }).addTo(map).bindPopup("<b>HUB CENTRAL</b><br>Entrega Flash");
-
-            // ZONA AZUL (CUIABÁ) - 8km
-            L.circle([cuiabaLat, cuiabaLon], {
-                color: '#00f2ff',
-                fillColor: '#00f2ff',
-                fillOpacity: 0.05,
-                radius: 8000,
-                weight: 1,
-                dashArray: '5, 5'
-            }).addTo(map);
-
-            // ZONA LARANJA (VG) - 14km
-            L.circle([cuiabaLat, cuiabaLon], {
-                color: '#ff5e00',
-                fillColor: '#ff5e00',
-                fillOpacity: 0.05,
-                radius: 14000,
-                weight: 1,
-                dashArray: '2, 10'
-            }).addTo(map);
+            // ZONAS (Círculos)
+            L.circle([storeLat, storeLon], { color: '#ccff00', fillColor: '#ccff00', fillOpacity: 0.15, radius: 3000, weight: 1 }).addTo(map);
+            L.circle([storeLat, storeLon], { color: '#00f2ff', fillColor: '#00f2ff', fillOpacity: 0.05, radius: 8000, weight: 1, dashArray: '5, 5' }).addTo(map);
+            L.circle([storeLat, storeLon], { color: '#ff5e00', fillColor: '#ff5e00', fillOpacity: 0.05, radius: 14000, weight: 1, dashArray: '2, 10' }).addTo(map);
 
             // Marcador da Loja
             const customIcon = L.divIcon({
@@ -433,7 +466,79 @@
                 iconAnchor: [6, 6]
             });
 
-            L.marker([cuiabaLat, cuiabaLon], { icon: customIcon }).addTo(map);
+            L.marker([storeLat, storeLon], { icon: customIcon }).addTo(map).bindPopup("<b>HUB GO GYM</b><br>Central de Distribuição");
+        }
+
+        /* --- FUNÇÃO DE GEOLOCALIZAÇÃO DO USUÁRIO --- */
+        function locateUser() {
+            const statusTxt = document.getElementById('status-location');
+            statusTxt.innerText = "BUSCANDO SATÉLITE...";
+
+            if (!navigator.geolocation) {
+                alert("Geolocalização não suportada pelo seu navegador.");
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition((position) => {
+                const userLat = position.coords.latitude;
+                const userLng = position.coords.longitude;
+
+                // Remove marcador anterior se existir
+                if (userMarker) map.removeLayer(userMarker);
+
+                // Ícone do Usuário (Azul Pulsante)
+                const userIcon = L.divIcon({
+                    className: 'user-pulse',
+                    iconSize: [15, 15],
+                    iconAnchor: [7, 7]
+                });
+
+                userMarker = L.marker([userLat, userLng], { icon: userIcon }).addTo(map);
+                userMarker.bindPopup("<b>VOCÊ ESTÁ AQUI</b>").openPopup();
+
+                // Centraliza no usuário e dá zoom
+                map.flyTo([userLat, userLng], 13);
+
+                // Traça rota simples (linha)
+                L.polyline([[storeLat, storeLon], [userLat, userLng]], {
+                    color: 'white',
+                    weight: 2,
+                    opacity: 0.5,
+                    dashArray: '10, 10'
+                }).addTo(map);
+
+                // Calcula Distância e Preço
+                calculateShipping(userLat, userLng);
+
+            }, () => {
+                statusTxt.innerText = "ERRO GPS";
+                alert("Não foi possível obter sua localização. Verifique as permissões.");
+            });
+        }
+
+        function calculateShipping(lat, lng) {
+            // Distância em Metros (Leaflet nativo)
+            const from = L.latLng(storeLat, storeLon);
+            const to = L.latLng(lat, lng);
+            const dist = from.distanceTo(to);
+            
+            // Reset Cards
+            document.querySelectorAll('.zone-card').forEach(el => el.classList.remove('active-zone'));
+            const statusTxt = document.getElementById('status-location');
+
+            if (dist <= 3000) {
+                document.getElementById('card-green').classList.add('active-zone');
+                statusTxt.innerHTML = `<span style="color:var(--neon-yellow)">ZONA VERDE DETECTADA (${(dist/1000).toFixed(1)}km)</span>`;
+            } else if (dist <= 8000) {
+                document.getElementById('card-blue').classList.add('active-zone');
+                statusTxt.innerHTML = `<span style="color:var(--blue-tech)">ZONA AZUL DETECTADA (${(dist/1000).toFixed(1)}km)</span>`;
+            } else if (dist <= 14000) {
+                document.getElementById('card-orange').classList.add('active-zone');
+                statusTxt.innerHTML = `<span style="color:var(--orange-alert)">ZONA VG DETECTADA (${(dist/1000).toFixed(1)}km)</span>`;
+            } else {
+                statusTxt.innerHTML = `<span style="color:red">FORA DA ÁREA DE ENTREGA (${(dist/1000).toFixed(1)}km)</span>`;
+                alert("Você está um pouco longe! Entre em contato no Whats para um orçamento personalizado.");
+            }
         }
 
         // Inicia o mapa assim que a página carrega
@@ -450,11 +555,8 @@
             const icons = { 'home': 0, 'tracking': 1, 'bag': 2 }; 
             if(icons[viewId] !== undefined) document.querySelectorAll('.nav-item')[icons[viewId]].classList.add('active');
 
-            // FIX IMPORTANTE: Se for a aba de mapa, forçar atualização do tamanho
             if(viewId === 'tracking' && map) {
-                setTimeout(() => {
-                    map.invalidateSize();
-                }, 100); // Pequeno delay para garantir que a div já está visível
+                setTimeout(() => { map.invalidateSize(); }, 100);
             }
         }
 
@@ -497,7 +599,6 @@
             cart.push(product);
             updateCart();
             
-            // Feedback simples no botão
             const btn = event.target.closest('button');
             const original = btn.innerHTML;
             btn.innerHTML = "<i class='fa-solid fa-check'></i> NA BAG";
