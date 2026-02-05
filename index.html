@@ -404,32 +404,33 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <script>
-        /* --- BANCO DE DADOS (IMAGENS CORRIGIDAS E ESTÉTICA PREMIUM) --- */
+        /* --- BANCO DE DADOS (IMAGENS LOCAIS) --- */
+        /* O código agora busca as imagens diretamente das pastas criadas */
         const DB = {
             hidra: [
-                { id: 'h1', name: "BLACK OPS 1.5L", price: 159.90, desc: "Aço Inox Militar. Mantém a água gelada por 24h na zona de combate.", img: "https://images.unsplash.com/photo-1627464082852-6d2c0b0df227?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'h2', name: "SHAKER VORTEX", price: 139.00, desc: "Motor elétrico. Mistura perfeita sem grumos. Acabamento Matte.", img: "https://images.unsplash.com/photo-1593091417202-d4d2a8b211f6?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'h3', name: "CANIL TÁTICO", price: 89.90, desc: "Garrafa estilo cantil militar 1L com capa de nylon balístico.", img: "https://images.unsplash.com/photo-1610398000002-f5422582878c?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'h4', name: "COPO COFFEE PRO", price: 79.90, desc: "Térmico para café pré-treino. Tampa à prova de vazamentos.", img: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=1080&auto=format&fit=crop" }
+                { id: 'h1', name: "BLACK OPS 1.5L", price: 159.90, desc: "Aço Inox Militar. Mantém a água gelada por 24h na zona de combate.", img: "img/hidra/h1.jpg" },
+                { id: 'h2', name: "SHAKER VORTEX", price: 139.00, desc: "Motor elétrico. Mistura perfeita sem grumos. Acabamento Matte.", img: "img/hidra/h2.jpg" },
+                { id: 'h3', name: "CANIL TÁTICO", price: 89.90, desc: "Garrafa estilo cantil militar 1L com capa de nylon balístico.", img: "img/hidra/h3.jpg" },
+                { id: 'h4', name: "COPO COFFEE PRO", price: 79.90, desc: "Térmico para café pré-treino. Tampa à prova de vazamentos.", img: "img/hidra/h4.jpg" }
             ],
             forca: [
-                { id: 'f1', name: "LEVER BELT PRO", price: 489.00, desc: "Couro legítimo 13mm. Fivela de aço inoxidável. Estabilidade total.", img: "https://images.unsplash.com/photo-1579364175317-b7336d3953f9?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'f2', name: "JOELHEIRA SBD", price: 199.00, desc: "Neoprene 7mm High Grade. Compressão máxima para Leg Day.", img: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'f3', name: "STRAPS FIGURE 8", price: 85.00, desc: "Trava total do pulso. Foco total nas costas, zero no antebraço.", img: "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'f4', name: "MAGNÉSIO LÍQUIDO", price: 45.00, desc: "Secagem em 10s. Grip absoluto. Sem sujeira.", img: "https://images.unsplash.com/photo-1584735935682-2fdd11898612?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'f5', name: "WRIST WRAPS", price: 69.90, desc: "Estabilidade para supino. Ajuste de tensão velcro.", img: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=1080&auto=format&fit=crop" }
+                { id: 'f1', name: "LEVER BELT PRO", price: 489.00, desc: "Couro legítimo 13mm. Fivela de aço inoxidável. Estabilidade total.", img: "img/forca/f1.jpg" },
+                { id: 'f2', name: "JOELHEIRA SBD", price: 199.00, desc: "Neoprene 7mm High Grade. Compressão máxima para Leg Day.", img: "img/forca/f2.jpg" },
+                { id: 'f3', name: "STRAPS FIGURE 8", price: 85.00, desc: "Trava total do pulso. Foco total nas costas, zero no antebraço.", img: "img/forca/f3.jpg" },
+                { id: 'f4', name: "MAGNÉSIO LÍQUIDO", price: 45.00, desc: "Secagem em 10s. Grip absoluto. Sem sujeira.", img: "img/forca/f4.jpg" },
+                { id: 'f5', name: "WRIST WRAPS", price: 69.90, desc: "Estabilidade para supino. Ajuste de tensão velcro.", img: "img/forca/f5.jpg" }
             ],
             acessorios: [
-                { id: 'a1', name: "MOCHILA ASSAULT", price: 379.00, desc: "Estilo militar. 45L. Compartimento para tênis e notebook.", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'a2', name: "CHEST BAG", price: 89.00, desc: "Bolsa de peito tática. Celular seguro durante a corrida.", img: "https://images.unsplash.com/photo-1545665277-5937bf04a5bd?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'a3', name: "TOALHA MAGNÉTICA", price: 119.00, desc: "Fixa nos aparelhos. Higiene e praticidade.", img: "https://images.unsplash.com/photo-1590239063630-f421c97a8291?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'a4', name: "BONÉ STEALTH", price: 69.90, desc: "Preto fosco. Tecido respirável. Aba curva.", img: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'a5', name: "CARBON GRIPS", price: 145.00, desc: "Proteção de palma para Cross e Ginástica. Fibra de carbono.", img: "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=1080&auto=format&fit=crop" }
+                { id: 'a1', name: "MOCHILA ASSAULT", price: 379.00, desc: "Estilo militar. 45L. Compartimento para tênis e notebook.", img: "img/acessorios/a1.jpg" },
+                { id: 'a2', name: "CHEST BAG", price: 89.00, desc: "Bolsa de peito tática. Celular seguro durante a corrida.", img: "img/acessorios/a2.jpg" },
+                { id: 'a3', name: "TOALHA MAGNÉTICA", price: 119.00, desc: "Fixa nos aparelhos. Higiene e praticidade.", img: "img/acessorios/a3.jpg" },
+                { id: 'a4', name: "BONÉ STEALTH", price: 69.90, desc: "Preto fosco. Tecido respirável. Aba curva.", img: "img/acessorios/a4.jpg" },
+                { id: 'a5', name: "CARBON GRIPS", price: 145.00, desc: "Proteção de palma para Cross e Ginástica. Fibra de carbono.", img: "img/acessorios/a5.jpg" }
             ],
             recovery: [
-                { id: 'r1', name: "ICE TOWEL", price: 49.00, desc: "Toalha de resfriamento instantâneo. Essencial em MT.", img: "https://images.unsplash.com/photo-1616801990453-61b6238b3941?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'r2', name: "ROLO MIOFASCIAL", price: 99.00, desc: "Textura grid rígida para soltar a musculatura tensa.", img: "https://images.unsplash.com/photo-1600881333168-2ef49b341f30?q=80&w=1080&auto=format&fit=crop" },
-                { id: 'r3', name: "PISTOLA MASSAGEM", price: 299.00, desc: "Percussão profunda. Acelera a recuperação pós-treino.", img: "https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=1080&auto=format&fit=crop" }
+                { id: 'r1', name: "ICE TOWEL", price: 49.00, desc: "Toalha de resfriamento instantâneo. Essencial em MT.", img: "img/recovery/r1.jpg" },
+                { id: 'r2', name: "ROLO MIOFASCIAL", price: 99.00, desc: "Textura grid rígida para soltar a musculatura tensa.", img: "img/recovery/r2.jpg" },
+                { id: 'r3', name: "PISTOLA MASSAGEM", price: 299.00, desc: "Percussão profunda. Acelera a recuperação pós-treino.", img: "img/recovery/r3.jpg" }
             ]
         };
 
@@ -569,6 +570,7 @@
             container.innerHTML = '';
             
             DB[cat].forEach(item => {
+                /* Nota: As imagens carregam localmente agora (img/...) */
                 container.innerHTML += `
                     <section class="product-slide" style="background-image: url('${item.img}')">
                         <div class="product-content">
