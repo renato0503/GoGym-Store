@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>GoGym Store | Ultimate App</title>
     
+    <link rel="icon" type="image/png" href="img/logo.png">
+    
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&family=Inter:wght@300;400;600;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -79,8 +81,13 @@
         }
         header * { pointer-events: auto; }
 
-        .logo-container h1 { font-size: 1.4rem; color: var(--neon-yellow); line-height: 1; }
-        .logo-container span { display: block; font-size: 0.55rem; color: white; letter-spacing: 2px; }
+        /* Estilo da Logo */
+        .logo-img {
+            height: 45px; /* Tamanho otimizado para mobile */
+            width: auto;
+            display: block;
+            filter: drop-shadow(0 0 5px rgba(204, 255, 0, 0.2)); /* Brilho sutil */
+        }
 
         .cart-trigger {
             position: relative; font-size: 1.2rem; color: white;
@@ -163,21 +170,6 @@
             border-radius: 8px;
         }
         .leaflet-popup-content { margin: 10px; font-family: 'Rajdhani', sans-serif; font-weight: 700; }
-
-        /* Marcador de Usuário (Pulsante) - MANTIDO NO CSS CASO PRECISE REATIVAR FUTURAMENTE */
-        .user-pulse {
-            width: 15px; height: 15px;
-            background: #00f2ff;
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.7);
-            animation: pulse-blue 2s infinite;
-        }
-        @keyframes pulse-blue {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(0, 242, 255, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 242, 255, 0); }
-        }
 
         .zone-info { 
             padding: 20px; 
@@ -269,8 +261,7 @@
 
     <header id="main-header">
         <div class="logo-container">
-            <h1>GOGYM</h1>
-            <span>ULTIMATE STORE</span>
+            <img src="img/logo.png" alt="GoGym Logo" class="logo-img">
         </div>
         <div class="cart-trigger" onclick="toggleCart()">
             <i class="fa-solid fa-bag-shopping"></i>
@@ -492,12 +483,9 @@
                 // Se tivesse marcador de usuário anterior, removeríamos aqui também
                 if (userMarker) map.removeLayer(userMarker);
 
-                /* NOTA: O marcador azul (userMarker) foi removido visualmente conforme solicitado.
-                   A lógica abaixo mantém apenas a linha pontilhada conectando o HUB ao CLIENTE.
-                */
+                /* AQUI É A MÁGICA: Não desenhamos marcador, apenas a linha */
 
                 // Centraliza no usuário e dá zoom adequado para ver a rota
-                // Cria um grupo de limites para enquadrar Loja e Usuario
                 const bounds = L.latLngBounds([
                     [storeLat, storeLon],
                     [userLat, userLng]
@@ -574,7 +562,6 @@
             container.innerHTML = '';
             
             DB[cat].forEach(item => {
-                /* Nota: As imagens carregam localmente (img/...) */
                 container.innerHTML += `
                     <section class="product-slide" style="background-image: url('${item.img}')">
                         <div class="product-content">
