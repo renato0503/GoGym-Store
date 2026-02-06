@@ -164,7 +164,7 @@
         }
         .leaflet-popup-content { margin: 10px; font-family: 'Rajdhani', sans-serif; font-weight: 700; }
 
-        /* Marcador de Usuário (Pulsante) */
+        /* Marcador de Usuário (Pulsante) - MANTIDO NO CSS CASO PRECISE REATIVAR FUTURAMENTE */
         .user-pulse {
             width: 15px; height: 15px;
             background: #00f2ff;
@@ -405,7 +405,6 @@
 
     <script>
         /* --- BANCO DE DADOS (IMAGENS LOCAIS) --- */
-        /* O código agora busca as imagens diretamente das pastas criadas */
         const DB = {
             hidra: [
                 { id: 'h1', name: "BLACK OPS 1.5L", price: 159.90, desc: "Aço Inox Militar. Mantém a água gelada por 24h na zona de combate.", img: "img/hidra/h1.jpg" },
@@ -437,15 +436,19 @@
         /* --- INICIALIZAÇÃO DO MAPA (LEAFLET) --- */
         let map; 
         let userMarker;
-        const storeLat = -15.5961;
-        const storeLon = -56.0966;
+        let routeLine; // Variável para armazenar a linha da rota
+
+        /* --- CONFIGURAÇÃO DO ESTOQUE (HUB CENTRAL) --- */
+        // Coordenadas calibradas para: Rua Voluntários da Pátria, 350 - Cuiabá, MT
+        const storeLat = -15.595535;
+        const storeLon = -56.101275;
 
         function initMap() {
             // Cria o mapa e define o zoom inicial
             map = L.map('real-map', {
                 zoomControl: false, 
                 attributionControl: false
-            }).setView([storeLat, storeLon], 12);
+            }).setView([storeLat, storeLon], 13);
 
             // Adiciona Tile Layer "Dark Matter"
             L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
@@ -454,12 +457,12 @@
                 maxZoom: 19
             }).addTo(map);
 
-            // ZONAS (Círculos)
+            // ZONAS (Círculos) - Baseados no Novo HUB
             L.circle([storeLat, storeLon], { color: '#ccff00', fillColor: '#ccff00', fillOpacity: 0.15, radius: 3000, weight: 1 }).addTo(map);
             L.circle([storeLat, storeLon], { color: '#00f2ff', fillColor: '#00f2ff', fillOpacity: 0.05, radius: 8000, weight: 1, dashArray: '5, 5' }).addTo(map);
             L.circle([storeLat, storeLon], { color: '#ff5e00', fillColor: '#ff5e00', fillOpacity: 0.05, radius: 14000, weight: 1, dashArray: '2, 10' }).addTo(map);
 
-            // Marcador da Loja
+            // Marcador da Loja (Ponto Verde)
             const customIcon = L.divIcon({
                 className: 'custom-div-icon',
                 html: "<div style='background-color:#ccff00; width:12px; height:12px; border-radius:50%; box-shadow:0 0 10px #ccff00; border:2px solid white;'></div>",
@@ -467,7 +470,7 @@
                 iconAnchor: [6, 6]
             });
 
-            L.marker([storeLat, storeLon], { icon: customIcon }).addTo(map).bindPopup("<b>HUB GO GYM</b><br>Central de Distribuição");
+            L.marker([storeLat, storeLon], { icon: customIcon }).addTo(map).bindPopup("<b>HUB GO GYM</b><br>R. Voluntários da Pátria, 350");
         }
 
         /* --- FUNÇÃO DE GEOLOCALIZAÇÃO DO USUÁRIO --- */
@@ -484,28 +487,29 @@
                 const userLat = position.coords.latitude;
                 const userLng = position.coords.longitude;
 
-                // Remove marcador anterior se existir
+                // Remove rota anterior se existir
+                if (routeLine) map.removeLayer(routeLine);
+                // Se tivesse marcador de usuário anterior, removeríamos aqui também
                 if (userMarker) map.removeLayer(userMarker);
 
-                // Ícone do Usuário (Azul Pulsante)
-                const userIcon = L.divIcon({
-                    className: 'user-pulse',
-                    iconSize: [15, 15],
-                    iconAnchor: [7, 7]
-                });
+                /* NOTA: O marcador azul (userMarker) foi removido visualmente conforme solicitado.
+                   A lógica abaixo mantém apenas a linha pontilhada conectando o HUB ao CLIENTE.
+                */
 
-                userMarker = L.marker([userLat, userLng], { icon: userIcon }).addTo(map);
-                userMarker.bindPopup("<b>VOCÊ ESTÁ AQUI</b>").openPopup();
+                // Centraliza no usuário e dá zoom adequado para ver a rota
+                // Cria um grupo de limites para enquadrar Loja e Usuario
+                const bounds = L.latLngBounds([
+                    [storeLat, storeLon],
+                    [userLat, userLng]
+                ]);
+                map.fitBounds(bounds, { padding: [50, 50] });
 
-                // Centraliza no usuário e dá zoom
-                map.flyTo([userLat, userLng], 13);
-
-                // Traça rota simples (linha)
-                L.polyline([[storeLat, storeLon], [userLat, userLng]], {
+                // Traça rota simples (Linha Pontilhada)
+                routeLine = L.polyline([[storeLat, storeLon], [userLat, userLng]], {
                     color: 'white',
                     weight: 2,
-                    opacity: 0.5,
-                    dashArray: '10, 10'
+                    opacity: 0.6,
+                    dashArray: '10, 10' // Efeito pontilhado
                 }).addTo(map);
 
                 // Calcula Distância e Preço
@@ -570,7 +574,7 @@
             container.innerHTML = '';
             
             DB[cat].forEach(item => {
-                /* Nota: As imagens carregam localmente agora (img/...) */
+                /* Nota: As imagens carregam localmente (img/...) */
                 container.innerHTML += `
                     <section class="product-slide" style="background-image: url('${item.img}')">
                         <div class="product-content">
